@@ -23,10 +23,10 @@
 #
 #
 library(devtools);library(Matrix)
-data <- read.csv('C:\\Users\\wangh\\OneDrive\\Desktop\\data_uni.csv')
-schools <- data['idj']
-X <- data[, c(1:6)]
-Y <- data[, c(10:14)]
+# data <- read.csv('data_uni.csv')
+# schools <- data['idj']
+X <- data[, c(1:2, 16)]
+# Y <- data[, c(10:14)]
 
 #test_result <- mvam(X,Y, schools)
 

@@ -55,13 +55,23 @@ mvam <- function(x, y, col_category){
                   sigma.sq <- params[[3]]
                   R <- solve(crossprod(z_stack))
 
-                  QH <- QH_estimation(x, M, R, n, col_category)
+                  QH <- QH_(x, M, R, n, col_category)
 
                   lambda_tilde <- lambda_estimation(x, M, col_category, R, sigma.sq, QH, e)
 
-                  omega.inv <- gls_omega(M, sigma.sq, lambda_tilde, n)
+                  temp_omega <- gls_omega(M, sigma.sq, lambda_tilde, n)
+                  omega.inv <- temp_omega[[1]]
+                  
+                  list_omega <- temp_omega[[2]]
+                  
+                  
+                  beta.gls <- solve(t(Z) %*% (omega.inv) %*% Z) %*% (t(Z) %*% omega.inv %*% Y)
 
-                  #return (list(lambda_tilde, omega))
+                  
+                  
+                  
+                  
+                  return (lambda_tilde)
 
 
 

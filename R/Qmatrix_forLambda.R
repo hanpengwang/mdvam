@@ -1,5 +1,5 @@
 
-QH_estimation <- function(data.x, M, R, n, category ){
+QH_ <- function(data.x, M, R, n, category ){
 
                 Xs <- as.matrix(cbind(category, data.x))
 
