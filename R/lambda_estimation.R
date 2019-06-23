@@ -108,12 +108,32 @@ lambda_estimation <- function(data.x, M, category, R, sigma.sq, QH, e){
                       Gamma <- rbind(Gamma, Gamma.j)
                       ###rm(Gamma.j,bj,vj,d1,d2)
       }
-
+      
       lambda.tilde <-  solve(Gamma) %*% (v - b)
 
       temp <- (M*(M-1)/2) + M
       dim(lambda.tilde) <- c(temp, J)
-
+      
+      ### rearrange lambda
+      
+      first_row <- 1 
+      row_list <- c(first_row)
+      temp <- 0
+      for (i in c(1 : (M - 1))) {
+        
+        first_row <- first_row + M - temp 
+        temp <- temp + 1 
+        row_list <- append(row_list, first_row)
+        
+      }
+      
+      lambda.tilde <- lambda.tilde[c(row_list, 
+                                               setdiff(
+                                                        c(1:nrow(lambda.tilde)), row_list 
+                                                        )
+                                                                              ), ]
+      
+      
       return(lambda.tilde)
 
 }

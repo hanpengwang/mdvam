@@ -33,9 +33,9 @@ fnc.form.Aj.theta5M <- function(deriv.alphaj.s){ # fucntion create variance cova
 ### variables needeed in this function (lambda.tilde.mle, beta.mle, l.Omega.inv,  )
 
 
-VA_estimation <- function(lambda.tilde.mle, beta.mle, l.omega.inv){
-  
-
+VA_estimation <- function(lambda.tilde.mle, beta.mle, l.Omega.inv, J, Y, Z, n){
+                                
+ 
                                 l.lambdaj<-list()
                                 for(j in 1:J){
                                               temp.lambdaj.tilde <- lambda.tilde.mle[,j]
@@ -69,10 +69,9 @@ VA_estimation <- function(lambda.tilde.mle, beta.mle, l.omega.inv){
                                 count_begin <- 1
                                 
                                 v.mle.j <- Y - Z %*% beta.mle
-                                
+                                browser()
                                 for (j in 1:J){
                                 
-                                              data.xs <- as.matrix(data.x[data.x[,1] == idj[j], -1])
                                               n.j <- n[j]
                                               count_end <- count_begin + n.j - 1 
                                         
@@ -92,72 +91,64 @@ VA_estimation <- function(lambda.tilde.mle, beta.mle, l.omega.inv){
                                 
                                 
                                 gamma <- do.call(cbind, lst.gamma)
-                                gamma <- data.frame(gamma)
-                                names(gamma)<-c("gamma.raz","gamma.lec","gamma.eng", "gamma.cit", "gamma.wcom")
-                                
+                                return(gamma)
                                 #-----------------------------------------------------------------
                                 # match university ID with gamma.mj's
                                 
-                                va.out<-cbind(idj,gamma)
-                                
-                                #-----------------------------------------------------------------
-                                va.out$ave_cent <- (va.out$gamma.raz+va.out$gamma.lec + va.out$gamma.eng + va.out$gamma.cit + va.out$gamma.wcom)/M
-                                
-                                #----- weights of the eta's from the standard deviations
-                                
-                                # turn into zeros the negative entries:
-                                for (j in c(1:J)){
-                                  for (r1 in c(1:M)){
-                                    for (r2 in c(1:M)){
-                                      if(l.lambdaj[[j]][r1,r2] < 0) l.lambdaj[[j]][r1,r2]<-0
-                                    }
-                                  }
-                                }
-                                
-                                l.lambdaj <- lapply(l.lambdaj, function(x) ifelse(x < 0, 0, x) )
-                                #dim(lambda.tilde)<-c((M*(M-1)),J)
-                                
-                                va.out$w_cent<-0
-                                for (j in 1:J)
-                                {
-                                  #va.out$w_cent[j]<- as.matrix(gamma[j,])%*% solve((as.matrix(l.lambdaj[[j]]))^(0.5)) %*% (iota.nj(M)) # if singular, solve() does not work
-                                  va.out$w_cent[j]<- as.matrix(gamma[j,])%*% ginv((as.matrix(l.lambdaj[[j]]))^(0.5)) %*% (iota.nj(M)) # if invertable, solve() and ginv() give the same exact result!!!!
-                                }
-                                
-                                #output <- va.out[order(va.out[,names(va.out)=="cent"]),]
-                                
-                                output <- va.out[with(va.out, order(va.out$w_cent, decreasing=TRUE)),]
-                                va.plot<- output
-                                
-                                # Correlation tables: among univariate VA's
-                                
-                                out.qr<-out.qr[,c(1,2,4)]; names(out.qr)[3]<-"va.qr"; names(out.qr)[2]<-"nj.qr"
-                                out.cr<-out.cr[,c(1,4)];   names(out.cr)[2]<-"va.cr"
-                                out.en<-out.en[,c(1,4)];   names(out.en)[2]<-"va.en"
-                                out.cc<-out.cc[,c(1,4)];   names(out.cc)[2]<-"va.cc"
-                                out.wrc<-out.wrc[,c(1,4)]; names(out.wrc)[2]<-"va.wrc"
-                                
-                                
-                                univar.va<-merge(out.qr, out.cr,by="univ_id")
-                                univar.va<-merge(univar.va, out.en,by="univ_id")
-                                univar.va<-merge(univar.va, out.cc,by="univ_id")
-                                univar.va<-merge(univar.va, out.wrc,by="univ_id")
-                                
-                                univar.va[1:5,]
-                                univar.cor<-cor(as.matrix(univar.va[,c(3:(M+2))]),method ="spearman")
-                                univar.cor<-round(univar.cor, 3)
-                                
-                                # Correlation tables: among multivariate and univariate VA's
-                                
-                                names(univar.va)[1]<-"idj"
-                                all.va<-merge(univar.va, va.out,by="idj")
-                                names(all.va)
-                                allva.cor<-cor(as.matrix(all.va[,c(3:7,10:16)]), method="spearman")
-                                allva.cor<-round(allva.cor,3)
-                                
-                                # correlation between modules
-                                module.cor<-cor(cbind(data.y$mod_razona_cuantitativo_punt,data.y$mod_lectura_critica, data.y$mod_ingles_punt,data.y$mod_comp_ciudadanas_punt, data.y$mod_comunica_escrita_punt))
-                                module.cor<-round(module.cor,3)
+                                # va.out<-cbind(idj,gamma)
+                                # 
+                                # #-----------------------------------------------------------------
+                                # va.out$ave_cent <- (va.out$gamma.raz+va.out$gamma.lec + va.out$gamma.eng + va.out$gamma.cit + va.out$gamma.wcom)/M
+                                # 
+                                # #----- weights of the eta's from the standard deviations
+                                # 
+                                # # turn into zeros the negative entries:
+                                # 
+                                # 
+                                # l.lambdaj <- lapply(l.lambdaj, function(x) ifelse(x < 0, 0, x) )
+                                # #dim(lambda.tilde)<-c((M*(M-1)),J)
+                                # 
+                                # va.out$w_cent<-0
+                                # for (j in 1:J)
+                                # {
+                                #   #va.out$w_cent[j]<- as.matrix(gamma[j,])%*% solve((as.matrix(l.lambdaj[[j]]))^(0.5)) %*% (iota.nj(M)) # if singular, solve() does not work
+                                #   va.out$w_cent[j]<- as.matrix(gamma[j,])%*% ginv((as.matrix(l.lambdaj[[j]]))^(0.5)) %*% (iota.nj(M)) # if invertable, solve() and ginv() give the same exact result!!!!
+                                # }
+                                # 
+                                # #output <- va.out[order(va.out[,names(va.out)=="cent"]),]
+                                # 
+                                # output <- va.out[with(va.out, order(va.out$w_cent, decreasing=TRUE)),]
+                                # va.plot<- output
+                                # 
+                                # # Correlation tables: among univariate VA's
+                                # 
+                                # out.qr<-out.qr[,c(1,2,4)]; names(out.qr)[3]<-"va.qr"; names(out.qr)[2]<-"nj.qr"
+                                # out.cr<-out.cr[,c(1,4)];   names(out.cr)[2]<-"va.cr"
+                                # out.en<-out.en[,c(1,4)];   names(out.en)[2]<-"va.en"
+                                # out.cc<-out.cc[,c(1,4)];   names(out.cc)[2]<-"va.cc"
+                                # out.wrc<-out.wrc[,c(1,4)]; names(out.wrc)[2]<-"va.wrc"
+                                # 
+                                # 
+                                # univar.va<-merge(out.qr, out.cr,by="univ_id")
+                                # univar.va<-merge(univar.va, out.en,by="univ_id")
+                                # univar.va<-merge(univar.va, out.cc,by="univ_id")
+                                # univar.va<-merge(univar.va, out.wrc,by="univ_id")
+                                # 
+                                # univar.va[1:5,]
+                                # univar.cor<-cor(as.matrix(univar.va[,c(3:(M+2))]),method ="spearman")
+                                # univar.cor<-round(univar.cor, 3)
+                                # 
+                                # # Correlation tables: among multivariate and univariate VA's
+                                # 
+                                # names(univar.va)[1]<-"idj"
+                                # all.va<-merge(univar.va, va.out,by="idj")
+                                # names(all.va)
+                                # allva.cor<-cor(as.matrix(all.va[,c(3:7,10:16)]), method="spearman")
+                                # allva.cor<-round(allva.cor,3)
+                                # 
+                                # # correlation between modules
+                                # module.cor<-cor(cbind(data.y$mod_razona_cuantitativo_punt,data.y$mod_lectura_critica, data.y$mod_ingles_punt,data.y$mod_comp_ciudadanas_punt, data.y$mod_comunica_escrita_punt))
+                                # module.cor<-round(module.cor,3)
 
 }
 
