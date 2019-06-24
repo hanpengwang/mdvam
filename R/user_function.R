@@ -24,7 +24,7 @@
 # groups or n : a vector with number of observations for each category
 # unique.category : set(category)
 
-mvam <- function(x, y, col_category, lambda.tilde, beta.gls, list_omega){
+mvam <- function(x, y, col_category){
 
                   idj <- as.matrix(unlist(unique(col_category))) ### schools' names
 
@@ -41,35 +41,35 @@ mvam <- function(x, y, col_category, lambda.tilde, beta.gls, list_omega){
 
 
 
-                  # wx <- Z.var(x, M, col_category, intercept = F, within_transform = T)
-                  # wy <- Y.var(y, M, col_category, within_transform = T)
-                  # 
-                  # 
-                  # w <-  Within(M, n)
-                  # 
-                  # 
-                  # params <- sigma_estimation(wx, wy, z_stack, x_stack, y_stack, df)
-                  # 
-                  # beta <- params[[1]]
-                  # e <- params[[2]]
-                  # sigma.sq <- params[[3]]
-                  # R <- solve(crossprod(z_stack))
-                  # 
-                  # QH <- QH_(x, M, R, n, col_category)
-                  # 
-                  # lambda_tilde <- lambda_estimation(x, M, col_category, R, sigma.sq, QH, e)
-                  # 
-                  # temp_omega <- gls_omega(M, sigma.sq, lambda_tilde, n)
-                  # omega.inv <- temp_omega[[1]]
-                  # 
-                  # list_omega <- temp_omega[[2]]
-                  # 
-                  # 
-                  # beta.gls <- solve(t(z_stack) %*% (omega.inv) %*% z_stack) %*% (t(z_stack) %*% omega.inv %*% y_stack)
+                  wx <- Z.var(x, M, col_category, intercept = F, within_transform = T)
+                  wy <- Y.var(y, M, col_category, within_transform = T)
+
+
+                  w <-  Within(M, n)
+
+
+                  params <- sigma_estimation(wx, wy, z_stack, x_stack, y_stack, df)
+
+                  beta <- params[[1]]
+                  e <- params[[2]]
+                  sigma.sq <- params[[3]]
+                  R <- solve(crossprod(z_stack))
+
+                  QH <- QH_(x, M, R, n, col_category)
+
+                  lambda_tilde <- lambda_estimation(x, M, col_category, R, sigma.sq, QH, e)
+
+                  temp_omega <- gls_omega(M, sigma.sq, lambda_tilde, n)
+                  omega.inv <- temp_omega[[1]]
+
+                  list_omega <- temp_omega[[2]]
+
+
+                  beta.gls <- solve(t(z_stack) %*% (omega.inv) %*% z_stack) %*% (t(z_stack) %*% omega.inv %*% y_stack)
 
                   
                   
-                  Gamma_ <- VA_estimation(lambda.tilde, beta.gls, list_omega, J, y_stack, z_stack, n)
+                  Gamma_ <- VA_estimation(lambda_tilde, beta.gls, list_omega, J, y_stack, z_stack, n)
                   
                   return (Gamma_)
 

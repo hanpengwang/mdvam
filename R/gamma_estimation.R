@@ -35,7 +35,7 @@ fnc.form.Aj.theta5M <- function(deriv.alphaj.s){ # fucntion create variance cova
 
 VA_estimation <- function(lambda.tilde.mle, beta.mle, l.Omega.inv, J, Y, Z, n){
                                 
- 
+                               
                                 l.lambdaj<-list()
                                 for(j in 1:J){
                                               temp.lambdaj.tilde <- lambda.tilde.mle[,j]
@@ -66,21 +66,26 @@ VA_estimation <- function(lambda.tilde.mle, beta.mle, l.Omega.inv, J, Y, Z, n){
                                 
                                 lst.gamma<-list()
                                 
-                                count_begin <- 1
                                 
-                                v.mle.j <- Y - Z %*% beta.mle
-                                browser()
+                                count_begin <- 0
+                                count_end <- 0
+                                v.mle <- Y - Z %*% beta.mle
+                                
                                 for (j in 1:J){
-                                
+                                              
                                               n.j <- n[j]
-                                              count_end <- count_begin + n.j - 1 
+                                              
+                                              count_begin <- count_end + 1 
+                                              nrows <- n[j] * 5
+                                              count_end <- count_end + nrows
+                                              
                                         
                                               omega.j.inv <- l.Omega.inv[[j]]
                                               a <- t(as.matrix(l.lambdaj[[j]])) %x% t(iota.nj(n.j))
                                               
-                                              gamma.j <- a %*% omega.j.inv %*% v.mle.j[count_begin : count_end]
+                                              gamma.j <- a %*% omega.j.inv %*% v.mle[count_begin:count_end]
                                             
-                                              lst.gamma[[j]] <- gamma.j
+                                              lst.gamma[[j]] <- gamma.j 
                                               
                                               count_begin <- count_end + 1 
                                             
@@ -90,7 +95,7 @@ VA_estimation <- function(lambda.tilde.mle, beta.mle, l.Omega.inv, J, Y, Z, n){
                                 
                                 
                                 
-                                gamma <- do.call(cbind, lst.gamma)
+                                gamma <- t(do.call(cbind, lst.gamma))
                                 return(gamma)
                                 #-----------------------------------------------------------------
                                 # match university ID with gamma.mj's
