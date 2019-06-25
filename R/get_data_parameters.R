@@ -28,7 +28,7 @@ schools <- data['idj']
 X <- data[, c(1:5, 16,17)]
 Y <- data[, c(10:14)]
 
-#test_result <- mvam(X,Y, schools)
+test_result <- mvam(X,Y, schools)
 
 #
 #
