@@ -11,6 +11,7 @@ Y.var <- function(data.y, M = NULL, category, within_transform = FALSE) {
                   y_stack <- 0
 
 
+                  
                   for (j in 1:J) {
                                    selected_category <- unique.category[j]
                                    n.j <- length(Ys[Ys[, 1] == selected_category, 1])
