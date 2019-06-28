@@ -137,3 +137,6 @@ lambda_estimation <- function(data.x, M, category, R, sigma.sq, QH, e){
       return(lambda.tilde)
 
 }
+
+
+

@@ -157,3 +157,14 @@ VA_estimation <- function(lambda.tilde.mle, beta.mle, l.Omega.inv, J, Y, Z, n){
 
 }
 
+
+
+
+#-------------------------------------------------------------------------------
+#gamma estimation for univariate-------------------------------------------------------------------------------
+
+Univar_VA_estimation <- function(variables) {
+  
+}
+
+

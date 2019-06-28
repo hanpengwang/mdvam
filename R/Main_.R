@@ -1,21 +1,22 @@
-#' Print "Hello world"
+#' Estimate value added 
 #'
 #' This is a simple function that, by default, prints "Hello world". You can
 #' customize the text to print (using the \code{to_print} argument) and add
 #' an exclamation point (\code{excited = TRUE}).
 #'
-#' @param to_print A character string giving the text the function will print
-#' @param excited Logical value specifying whether to include an exclamation
-#'    point after the text
-#'
+#' @param x dependent variables
+#' @param y indenpent variables, can be one or multiple for each observation
+#' @param col_category this is a vector where each value corresponding each observation's id 
+#' @param comp_effcet default null. a vector contains variables names which you want to create composition effects
+#' @param ... for future implementation
+#' 
 #' @return This function returns a phrase to print, with or without an
 #'    exclamation point added. As a side effect, this function also prints out
 #'    the phrase.
 #'
 #' @examples
-#' hello_world()
-#' hello_world(excited = TRUE)
-#' hello_world(to_print = "Hi world")
+#' mvam(x, y, col_category)
+#' mvam(x, y, col_category, c('X1','X2',..,'Xm'))
 #'
 #' @export
 
@@ -25,63 +26,68 @@
 # unique.category : set(category)
 
 mvam <- function(x, y, col_category, comp_effect = NULL, ...){
-  
-                  df_x <- cbind(col_category, x)
+                  data_contain <- data_process(x, y, col_category)
                   
-                  idj <- as.matrix(unlist(unique(col_category))) ### schools' names
-
-                  M <- length(y[1,])
-                  n <- as.matrix(table(col_category))
-                  N <- sum(n)
-                  K <- dim(X)[2]-1
-                  J <- length(idj)
-                  df <- M*N - M * K - M * J
+                  col_category <- data_contain[[1]]
+                  y <- data_contain[[2]]
+                  x <- data_contain[[3]]
                   
-                  
-                  if ( !is.null(comp_effect)) {
-                    comp_df <- cbind(col_category , x[,c(comp_effect)])
-                    comp_col <- comp_create(comp_df, n)
-                    x <- cbind(x, comp_col)
-                    
-                  }
-
-                  z_stack <- Z.var(x, M, col_category, intercept = T)
-                  x_stack <- Z.var(x, M, col_category, intercept = F, within_transform = F)
-                  y_stack <- Y.var(y, M, col_category, within_transform = F)
-
-
-
-                  wx <- Z.var(x, M, col_category, intercept = F, within_transform = T)
-                  wy <- Y.var(y, M, col_category, within_transform = T)
-
-
-                  w <-  Within(M, n)
-
-
-                  params <- sigma_estimation(wx, wy, z_stack, x_stack, y_stack, df)
-
-                  beta <- params[[1]]
-                  e <- params[[2]]
-                  sigma.sq <- params[[3]]
-                  R <- solve(crossprod(z_stack))
-
-                  QH <- QH_(x, M, R, n, col_category)
-
-                  lambda_tilde <- lambda_estimation(x, M, col_category, R, sigma.sq, QH, e)
-
-                  temp_omega <- gls_omega(M, sigma.sq, lambda_tilde, n)
-                  omega.inv <- temp_omega[[1]]
-
-                  list_omega <- temp_omega[[2]]
-
-
-                  beta.gls <- solve(t(z_stack) %*% (omega.inv) %*% z_stack) %*% (t(z_stack) %*% omega.inv %*% y_stack)
-
-
-
-                  Gamma_ <- VA_estimation(lambda_tilde, beta.gls, list_omega, J, y_stack, z_stack, n)
-                  
-                  return (x)
+                  # df_x <- cbind(col_category, x)
+                  # 
+                  # idj <- as.matrix(unlist(unique(col_category))) ### schools' names
+                  # 
+                  # M <- length(y[1,])
+                  # n <- as.matrix(table(col_category))
+                  # N <- sum(n)
+                  # K <- dim(X)[2]-1
+                  # J <- length(idj)
+                  # df <- M*N - M * K - M * J
+                  # 
+                  # 
+                  # if ( !is.null(comp_effect)) {
+                  #   comp_df <- cbind(col_category , x[,c(comp_effect)])
+                  #   comp_col <- comp_create(comp_df, n)
+                  #   x <- cbind(x, comp_col)
+                  #   
+                  # }
+                  # 
+                  # z_stack <- Z.var(x, M, col_category, intercept = T)
+                  # x_stack <- Z.var(x, M, col_category, intercept = F, within_transform = F)
+                  # y_stack <- Y.var(y, M, col_category, within_transform = F)
+                  # 
+                  # 
+                  # 
+                  # wx <- Z.var(x, M, col_category, intercept = F, within_transform = T)
+                  # wy <- Y.var(y, M, col_category, within_transform = T)
+                  # 
+                  # 
+                  # #w <-  Within(M, n)
+                  # 
+                  # 
+                  # params <- sigma_estimation(wx, wy, z_stack, x_stack, y_stack, df)
+                  # 
+                  # beta <- params[[1]]
+                  # e <- params[[2]]
+                  # sigma.sq <- params[[3]]
+                  # R <- solve(crossprod(z_stack))
+                  # 
+                  # QH <- QH_(x, M, R, n, col_category)
+                  # 
+                  # lambda_tilde <- lambda_estimation(x, M, col_category, R, sigma.sq, QH, e)
+                  # 
+                  # temp_omega <- gls_omega(M, sigma.sq, lambda_tilde, n)
+                  # omega.inv <- temp_omega[[1]]
+                  # 
+                  # list_omega <- temp_omega[[2]]
+                  # 
+                  # 
+                  # beta.gls <- solve(t(z_stack) %*% (omega.inv) %*% z_stack) %*% (t(z_stack) %*% omega.inv %*% y_stack)
+                  # 
+                  # 
+                  # 
+                  # Gamma_ <- VA_estimation(lambda_tilde, beta.gls, list_omega, J, y_stack, z_stack, n)
+                  # 
+                   return (cbind(col_category, y, x))
 
 
 
@@ -91,3 +97,15 @@ mvam <- function(x, y, col_category, comp_effect = NULL, ...){
 
 
 }
+
+umvam <- function(x, y, col_category, comp_effect = NULL, ...){
+  
+                    data_contain <- data_process(x, y, col_category)
+                    
+                    col_category <- data_contain[[1]]
+                    y <- data_contain[[2]]
+                    x <- data_contain[[3]]
+  
+  
+}
+
