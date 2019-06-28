@@ -165,6 +165,92 @@ VA_estimation <- function(lambda.tilde.mle, beta.mle, l.Omega.inv, J, Y, Z, n){
 
 Univar_VA_estimation <- function(variables) {
   
+  
+                  x <- data.frame(x)
+                  x <- as.matrix(x)
+                  
+                  # within estimator 
+                  # NOTE: For model 1 the intercept, and for models 2 & 3 both the intercept and the COMP variable turn to zeros in WZ (!)
+                  
+                  Z.w<-x;  is.numeric(Z.w) #; Z.w<-apply(Z.w,2,as.numeric)  
+                  WZ<-as.matrix(Within2(Z.w,n))
+                  WY<-as.matrix(Within2(y,n))                                    # wy = wx*beta + wu
+                  pi.w.hat<- solve(crossprod(WZ)) %*%crossprod(WZ,WY)            
+                  ###pi.w.hat
+                  
+                  # zeta.sq.hat
+                  u.w.hat<-y-(Z.w%*%pi.w.hat); #is.matrix(u.w.hat)
+                  Wu<-as.matrix(Within2(u.w.hat,n)); dim(Wu)
+                  N<-nrow(Z.w)
+                  J<-length(n)
+                  K<-ncol(Z.w)
+                  zeta.sq.hat<- crossprod(u.w.hat,Wu)/(N-J-K)      ### sigma 2
+                  ###zeta.sq.hat; N; J; K
+                  
+                  # between estimator   
+                  # NOTE: Should remove the COMP variable because one of the covariates and its COMP are identical in BZ (!)
+                  
+                  # define Z.b 
+                  Z.b<-data.frame(cbind(rep(1,sum(n)),x))   ### with intercept 
+                  names(Z.b)[1]<-"intercept" 
+                  Z.b<-as.matrix(Z.b)
+                  BZ<-as.matrix(Between2(Z.b,n))
+                  BY<-as.matrix(Between2(y,n))
+                  pi.b.hat<- solve(crossprod(BZ)) %*% crossprod(BZ,BY)
+                  pi.b.hat
+                  
+                  # tau.sq.hat
+                  u.b.hat<- BY-(BZ%*%pi.b.hat)
+                  J<-length(n) 
+                  K<-ncol(Z.b)
+                  A<-crossprod(u.b.hat); A
+                  B<-zeta.sq.hat*sum(diag(  crossprod(BZ,(diag(1/n)%*%BZ))%*%solve(crossprod(BZ)  ))) ; ###B
+                  C<-zeta.sq.hat*sum(1/n) ; ###C
+                  tau.sq.hat<-(A+B-C)/(J-K)
+                  
+                  # GLS estimator of pi.hat (Z should include the intercept and the COMP (if acc. to the model))
+                  
+                  # V.hat
+                  tau<-matrix(tau.sq.hat)
+                  zeta<-matrix(zeta.sq.hat) 
+                  
+                  # create a block diagonal matrix: V
+                  listV<-list()
+                  for(i in c(1:length(n))){
+                    temp<-J.nj(n[i])*tau[1] + Diagonal(n[i])*zeta[1]
+                    listV[[i]]<- solve(temp)
+                  }
+                  V.hat.inv<-bdiag(listV)
+                  
+                  # pi.gls.hat
+                  Z<-data.frame(cbind(rep(1,sum(n)),x2))
+                  names(Z)[1]<-"intercept" 
+                  Z<-as.matrix(Z)
+                  
+                  pi.var<-solve((crossprod(Z,V.hat.inv))%*%Z)
+                  pi.sd<-sqrt(diag(pi.var))
+                  pi.gls.hat<-pi.var %*% (crossprod(Z,V.hat.inv) %*%y )
+                  
+                  # value added
+                  u.hat<- as.matrix(y-Z%*%pi.gls.hat)  
+                  N<-nrow(u.hat)
+                  J<-length(n)
+                  K<-ncol(Z)
+                  tau.L.N<-tau[1]*t(L.n(n))
+                  va<-tau.L.N%*%V.hat.inv%*%u.hat   ###; va ; N;J;K
+                  
+                  # link to university id and name:
+                  va.univ<-cbind(univ.id.nom, data.frame(round(matrix(va),5))) #; va.univ
+                  names(va.univ)<-c("univ_id", "n_j", "univ name", "va")
+                  va.univ<-data.frame(va.univ)
+                  
+                  # re-order in VA decreasing order
+                  va.univ <- va.univ[with(va.univ, order(va.univ$va, decreasing=TRUE)),]; va.univ
+                  mean.theta.j<-round(sum(va.univ$va)/nrow(va.univ),5)
+                  
+                  
+  
+  
 }
 
 

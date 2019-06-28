@@ -166,3 +166,41 @@ Pjm.fn <- function(M, j, m, n){
 #--------------------------------------------------------------------------------------
 #Matrices for Univariate estimation--------------------------------------------------------------------------------------
 
+
+L.n <- function(n,w=rep(1,length(n)))    
+  # n = (n1,n2,...,nJ)
+  # w = (w1,w2,...,wJ) weights each entry of L.n
+{
+  NN <- sum(n)                  ### total number of students 
+  J <- length(n)                ### number of schools 
+  b <- matrix(rbind(n, rep(NN,length(n))),ncol=1)    ###
+  bb <- b[2:(2*J-1)]            ###   ???????
+  aux <- matrix(rbind(rep(0,J),rep(1,J)/w),ncol=1)[-(1:2),]          ### 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 
+  return(matrix(c(rep(1/w[1],b[1]),rep(aux,bb)),ncol=J,nrow=sum(n))) 
+}
+
+
+Between2 <- function(X,n)
+  # X is vector (or a matrix eventually)
+  # n = (n1,n2,...,nJ) specifies the cut points
+  # ncol(X) = sum(n)
+{
+  J <- length(n)
+  XX <- data.frame(cbind(rep(1:J,n),X))
+  names(XX)[1] <- "school"
+  return(aggregate(XX,list(school=XX$school), FUN=function(x) return(mean(x,na.rm=T)))[,-(1:2)] ) # return a vector (matrix) with J rows (Between vector)
+}
+
+Within2 <- function(X,n)
+  # X is vector (or a matrix eventually)
+  # n = (n1,n2,...,nJ) specifies the cut points
+  # ncol(X) = sum(n)
+{
+  J <- length(n)
+  aux <- as.matrix(Between2(X,n))
+  out <- matrix(rep(aux[,1],n))
+  if(ncol(X)>1) for (j in 2:ncol(X)) out <- cbind(out,rep(aux[,j],n))
+  return(X-out) # return a vector (matrix) with n rows (Between vector)
+}
+
+
