@@ -69,8 +69,11 @@ Z.var <- function(data.x, M, category, intercept = FALSE, within_transform = FAL
                   for (j in 1:J) {
                                     selected_category <- unique.category[j]
                                     selected_xs <- Xs[Xs[,1] == selected_category, -1]
+                                    
+                                    if (length(selected_xs) == ncol(Xs) - 1) {dim(selected_xs) = c(1,ncol(Xs) - 1)} 
+                                    
                                     zj <- Zj.var(M, selected_xs, with_intercept = intercept)
-
+                                    
                                     if (within_transform == TRUE) {
 
                                                                     n.j <- length(selected_xs[,1])

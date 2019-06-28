@@ -22,15 +22,16 @@
 #
 #
 #
-library(devtools);library(Matrix)
-data <- read.csv('data_uni.csv')
-schools <- data['idj']
-X <- data[, c(1:5, 16,17)]
-Y <- data[, c(10:14)]
-
+#  library(devtools);library(Matrix)
+# # data <- read.csv('data_uni.csv')
+# data <- read.csv('C:/Users/wangh/OneDrive/Desktop/simce.csv')
+# # schools <- data['idj']
+# # X <- data[, c(1:5, 16,17)]
+# # Y <- data[, c(10:14)]
+# 
 #test_result <- mvam(X,Y, schools)
-
-#
+# 
+# #
 #
 
 #beta.w <- solve(crossprod(test[[1]])) %*% crossprod(test[[1]], test[[2]])
