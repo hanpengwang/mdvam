@@ -1,8 +1,5 @@
 #' Estimate value added 
 #'
-#' This is a simple function that, by default, prints "Hello world". You can
-#' customize the text to print (using the \code{to_print} argument) and add
-#' an exclamation point (\code{excited = TRUE}).
 #'
 #' @param x dependent variables
 #' @param y indenpent variables, can be one or multiple for each observation
@@ -35,7 +32,7 @@ mvam <- function(x, y, col_category, comp_effect = NULL, ...){
                   # df_x <- cbind(col_category, x)
                   # 
                   # idj <- as.matrix(unlist(unique(col_category))) ### schools' names
-                  # 
+                  # idj <- sort(idj[,1])
                   # M <- length(y[1,])
                   # n <- as.matrix(table(col_category))
                   # N <- sum(n)
@@ -99,13 +96,39 @@ mvam <- function(x, y, col_category, comp_effect = NULL, ...){
 }
 
 umvam <- function(x, y, col_category, comp_effect = NULL, ...){
-  
+
                     data_contain <- data_process(x, y, col_category)
-                    
                     col_category <- data_contain[[1]]
                     y <- data_contain[[2]]
                     x <- data_contain[[3]]
-  
+                    n <- as.matrix(table(col_category))
+                    idj <- as.matrix(unlist(unique(col_category)))
+                    idj <- sort(idj[,1])
+                    if ( !is.null(comp_effect)) {
+                        comp_df <- cbind(col_category , x[,c(comp_effect)])
+                        comp_col <- comp_create(comp_df, n)
+                        x_comp <- cbind(x, comp_col)
+                        va_ <- va_multiple(x, y, n,  x_comp)
+                      }
+                    
+                    va_ <- va_multiple(x = x, y = y, n = n)
+                    
+                    va_[,1] <- idj
+                    
+                    return(va_)
   
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
