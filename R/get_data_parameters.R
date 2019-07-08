@@ -23,13 +23,13 @@
 #
 #
 #  library(devtools);library(Matrix)
-# # data <- read.csv('data_uni.csv')
-# data <- read.csv('C:/Users/wangh/OneDrive/Desktop/simce.csv')
-# # schools <- data['idj']
-# # X <- data[, c(1:5, 16,17)]
-# # Y <- data[, c(10:14)]
-# 
-#test_result <- mvam(X,Y, schools)
+# data2 <- read.csv('data_uni.csv')
+# # data <- read.csv('C:/Users/wangh/OneDrive/Desktop/simce.csv')
+# schools2 <- data2['idj']
+# X2 <- data2[, c(1:5, 16,17)]
+# Y2 <- data2[, c(10:14)]
+# # 
+# test_result <- mvam(X2,Y2, schools2)
 # 
 # #
 #

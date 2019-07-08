@@ -28,7 +28,11 @@ mvam <- function(x, y, col_category, comp_effect = NULL, ...){
                   col_category <- data_contain[[1]]
                   y <- data_contain[[2]]
                   x <- data_contain[[3]]
+<<<<<<< HEAD
 
+=======
+                  
+>>>>>>> b99c383ef1137c12fe2c7d48435a714aedc933dc
                   df_x <- cbind(col_category, x)
 
                   idj <- as.matrix(unlist(unique(col_category))) ### schools' names
@@ -47,12 +51,22 @@ mvam <- function(x, y, col_category, comp_effect = NULL, ...){
                     x <- cbind(x, comp_col)
 
                   }
+<<<<<<< HEAD
                   z_stack <- Z.var(x, M, col_category, intercept = T)
                   x_stack <- Z.var(x, M, col_category, intercept = F, within_transform = F)
                   y_stack <- Y.var(y, M, col_category, within_transform = F)
                   #
                   #
                   #
+=======
+
+                  z_stack <- Z.var(x, M, col_category, intercept = T)
+                  x_stack <- Z.var(x, M, col_category, intercept = F, within_transform = F)
+                  y_stack <- Y.var(y, M, col_category, within_transform = F)
+
+
+
+>>>>>>> b99c383ef1137c12fe2c7d48435a714aedc933dc
                   wx <- Z.var(x, M, col_category, intercept = F, within_transform = T)
                   wy <- Y.var(y, M, col_category, within_transform = T)
 
