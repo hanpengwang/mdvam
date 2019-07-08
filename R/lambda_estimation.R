@@ -31,7 +31,7 @@ lambda_estimation <- function(data.x, M, category, R, sigma.sq, QH, e){
 
                       selected_xs <- Xs[Xs[,1] == selected_category, -1]
 
-                      Zj <- Zj.var(M, selected_xs, with_intercept = T)
+                      Zj <- Zj.var(M, selected_xs, with_intercept = T, Nx = (ncol(Xs) - 1))
 
 
                       if (j == 1) {
@@ -105,7 +105,7 @@ lambda_estimation <- function(data.x, M, category, R, sigma.sq, QH, e){
                                       Gamma.j <- cbind(Gamma.j, diag(alpha.j[,l]))
                       }
 
-                      Gamma <- rbind(Gamma, Gamma.j)
+                      Gamma <- ginv(Gamma, Gamma.j)
                       ###rm(Gamma.j,bj,vj,d1,d2)
       }
       

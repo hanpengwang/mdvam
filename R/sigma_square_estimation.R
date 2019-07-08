@@ -1,6 +1,6 @@
 sigma_estimation <- function(WX, WY, Z, X, Y, df){
 
-                      beta.w <- solve(crossprod(WX)) %*% crossprod(WX, WY)
+                      beta.w <- ginv(crossprod(WX)) %*% crossprod(WX, WY)
 
 
                       res <- Y - X %*% beta.w

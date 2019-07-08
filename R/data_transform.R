@@ -40,7 +40,8 @@ Y.var <- function(data.y, M = NULL, category, within_transform = FALSE) {
 #------------------------------------------------------------------------------------------------------------------------------------------------
 
 
-Zj.var <- function(M, data.x, with_intercept = FALSE){
+Zj.var <- function(M, data.x, with_intercept = FALSE, Nx){
+                    if (length(data.x) == Nx) {dim(data.x) = c(1,Nx)}
                     if (with_intercept == TRUE) {
                                                   intercept <- rep(1, dim(data.x)[1])
                                                   z.j <- cbind(intercept, data.x)
@@ -54,6 +55,7 @@ Zj.var <- function(M, data.x, with_intercept = FALSE){
                     Z.j <- as.matrix(I %x% z.j)
 
                     return(Z.j)
+                    
 }
 
 
@@ -69,10 +71,8 @@ Z.var <- function(data.x, M, category, intercept = FALSE, within_transform = FAL
                   for (j in 1:J) {
                                     selected_category <- unique.category[j]
                                     selected_xs <- Xs[Xs[,1] == selected_category, -1]
-                                    
-                                    if (length(selected_xs) == ncol(Xs) - 1) {dim(selected_xs) = c(1,ncol(Xs) - 1)} 
-                                    
-                                    zj <- Zj.var(M, selected_xs, with_intercept = intercept)
+                                
+                                    zj <- Zj.var(M, selected_xs, with_intercept = intercept, Nx = (ncol(Xs) - 1) )
                                     
                                     if (within_transform == TRUE) {
 
@@ -84,7 +84,7 @@ Z.var <- function(data.x, M, category, intercept = FALSE, within_transform = FAL
 
                                     z <- rBind(z, zj)
 
-
+  
                                     }
                   z <- as.matrix(z[-1,])
                   return(z)

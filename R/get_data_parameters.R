@@ -22,7 +22,7 @@
 #
 #
 #
-#  library(devtools);library(Matrix)
+library(devtools);library(Matrix); library(MASS)
 # data2 <- read.csv('data_uni.csv')
 # # data <- read.csv('C:/Users/wangh/OneDrive/Desktop/simce.csv')
 # schools2 <- data2['idj']
@@ -34,6 +34,14 @@
 # #
 #
 
+# # data2 <- read.csv('data_uni.csv')
+# data <- read.csv('C:/Users/wangh/OneDrive/Desktop/simce.csv')
+# schools <- new_data['rbd4b']
+#X <- new_data[, c(4:7,12:13)]
+# Y <- new_data[, c(9:11)]
+#schools <- data['rbd4b']
+# X <- data[, c(2:7)]head
+# Y <- data[, c(9:11)]
 #beta.w <- solve(crossprod(test[[1]])) %*% crossprod(test[[1]], test[[2]])
 
 # idj <- as.matrix(unlist(unique(schools)))

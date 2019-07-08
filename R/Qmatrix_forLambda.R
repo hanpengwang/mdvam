@@ -22,12 +22,12 @@ QH_ <- function(data.x, M, R, n, category ){
                                   list.QHj <- list()
                                   selected_category_j1 <- unique.category[j1]
                                   selected_xs_j1 <- Xs[Xs[,1] == selected_category_j1, -1]
-                                  Z1 <- Zj.var(M, selected_xs_j1, with_intercept = T)
+                                  Z1 <- Zj.var(M, selected_xs_j1, with_intercept = T, Nx = (ncol(Xs) - 1))
 
                                   for (j2 in 1:J){
                                                   selected_category_j2 <- unique.category[j2]
                                                   selected_xs_j2 <- Xs[Xs[,1] == selected_category_j2, -1]
-                                                  Z2 <- Zj.var(M, selected_xs_j2, with_intercept = T)
+                                                  Z2 <- Zj.var(M, selected_xs_j2, with_intercept = T, Nx = (ncol(Xs) - 1))
                                                   this.block <-  0 - Z1%*%tcrossprod(R,Z2)
                                                   if (j1 == j2){
                                                                 this.block <- Diagonal(M * n[j1]) + this.block

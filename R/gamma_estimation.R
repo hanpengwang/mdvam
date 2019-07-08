@@ -33,7 +33,7 @@ fnc.form.Aj.theta5M <- function(deriv.alphaj.s){ # fucntion create variance cova
 ### variables needeed in this function (lambda.tilde.mle, beta.mle, l.Omega.inv,  )
 
 
-VA_estimation <- function(lambda.tilde.mle, beta.mle, l.Omega.inv, J, Y, Z, n){
+VA_estimation <- function(lambda.tilde.mle, beta.mle, l.Omega.inv, J, Y, Z, n, M){
                                 
                                
                                 l.lambdaj<-list()
@@ -70,13 +70,12 @@ VA_estimation <- function(lambda.tilde.mle, beta.mle, l.Omega.inv, J, Y, Z, n){
                                 count_begin <- 0
                                 count_end <- 0
                                 v.mle <- Y - Z %*% beta.mle
-                                
                                 for (j in 1:J){
                                               
                                               n.j <- n[j]
                                               
                                               count_begin <- count_end + 1 
-                                              nrows <- n[j] * 5
+                                              nrows <- n[j] * M
                                               count_end <- count_end + nrows
                                               
                                         
@@ -173,7 +172,7 @@ Univar_VA_estimation <- function(x, y, n, x2 = NULL) {
                   Z.w <- x
                   WZ <- as.matrix(Within2(Z.w,n))
                   WY <- as.matrix(Within2(y,n))                                    # wy = wx*beta + wu
-                  pi.w.hat<- solve(crossprod(WZ)) %*% crossprod(WZ,WY)            
+                  pi.w.hat<- ginv(crossprod(WZ)) %*% crossprod(WZ,WY)            
                   ###pi.w.hat
                   
                   # zeta.sq.hat
