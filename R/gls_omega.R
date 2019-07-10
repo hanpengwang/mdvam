@@ -19,11 +19,11 @@ gls_omega <- function(M, sigma.sq, lambda.tilde, groups){
                                 lambda_j <- diag(M)
 
                                 J <- length(groups)
-
                                 for (j in 1:J){
 
                                               lambdaj <- lambda_j  # depends on M
                                               lambdaj[lower.tri(lambdaj, diag=TRUE)] <- lambda.tilde[,j]
+                                              lambdaj[upper.tri(lambdaj, diag=FALSE)] <- 0
                                               lambdaj <- lambdaj + t(lambdaj) - diag(diag(lambdaj)) # this is our \lambda^j matrix
 
                                               lst.lambda[[j]] <- lambdaj

@@ -192,7 +192,7 @@ Univar_VA_estimation <- function(x, y, n, x2 = NULL) {
                   Z.b <- cbind(rep(1,sum(n)), x)   ### with intercept 
                   BZ <- as.matrix(Between2(Z.b, n))
                   BY <- as.matrix(Between2(y, n))
-                  pi.b.hat<- solve(crossprod(BZ)) %*% crossprod(BZ,BY)
+                  pi.b.hat<- ginv(crossprod(BZ)) %*% crossprod(BZ,BY)
                   
                   
                   # tau.sq.hat

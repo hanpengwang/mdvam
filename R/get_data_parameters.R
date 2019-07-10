@@ -23,11 +23,11 @@
 #
 #
 library(devtools);library(Matrix); library(MASS)
-# data2 <- read.csv('data_uni.csv')
-# # data <- read.csv('C:/Users/wangh/OneDrive/Desktop/simce.csv')
-# schools2 <- data2['idj']
-# X2 <- data2[, c(1:5, 16,17)]
-# Y2 <- data2[, c(10:14)]
+#data2 <- read.csv('data_uni.csv')
+# # # data <- read.csv('C:/Users/wangh/OneDrive/Desktop/simce.csv')
+#  schools2 <- data2['idj']
+#  X2 = data2[,c(2:7, 16:21)]
+#  Y2 = data2[names(data2) %in% c("mod_comunica_escrita_punt", "mod_ingles_punt", "mod_lectura_critica", "mod_razona_cuantitativo_punt", "mod_comp_ciudadanas_punt"),]
 # # 
 # test_result <- mvam(X2,Y2, schools2)
 # 

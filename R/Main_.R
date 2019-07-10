@@ -36,10 +36,9 @@ mvam <- function(x, y, col_category, comp_effect = NULL, ...){
                   M <- length(y[1,])
                   n <- as.matrix(table(col_category))
                   N <- sum(n)
-                  K <- dim(X)[2]-1
+                  K <- dim(x)[2]
                   J <- length(idj)
                   df <- M*N - M * K - M * J
-
 
                   if ( !is.null(comp_effect)) {
                     comp_df <- cbind(col_category , x[,c(comp_effect)])
@@ -55,14 +54,16 @@ mvam <- function(x, y, col_category, comp_effect = NULL, ...){
 
                   wx <- Z.var(x, M, col_category, intercept = F, within_transform = T)
                   wy <- Y.var(y, M, col_category, within_transform = T)
+                  
+                  
 
                   params <- sigma_estimation(wx, wy, z_stack, x_stack, y_stack, df)
 
                   beta <- params[[1]]
-                  e <- params[[2]]
-                  sigma.sq <- params[[3]]
-                  R <- solve(crossprod(z_stack))
-
+                  e <- params[[2]] 
+                  sigma.sq <- params[[3]] 
+                  R <- ginv(crossprod(z_stack))
+                  
                   QH <- QH_(x, M, R, n, col_category)
 
                   lambda_tilde <- lambda_estimation(x, M, col_category, R, sigma.sq, QH, e)
@@ -71,11 +72,14 @@ mvam <- function(x, y, col_category, comp_effect = NULL, ...){
                   omega.inv <- temp_omega[[1]]
 
                   list_omega <- temp_omega[[2]]
-
-
-                  beta.gls <- solve(t(z_stack) %*% (omega.inv) %*% z_stack) %*% (t(z_stack) %*% omega.inv %*% y_stack)
-
-
+                  
+                  
+                  term1 <- as.matrix(t(z_stack) %*% (omega.inv) %*% z_stack) ### goes to beta.gls estimation
+                  
+                  beta.gls <- ginv(term1) %*% (t(z_stack) %*% omega.inv %*% y_stack)
+                  
+                  lambda_tilde <- lambda_rearrange(lambda_tilde, M)
+                  
 
                   Gamma_ <- VA_estimation(lambda_tilde, beta.gls, list_omega, J, y_stack, z_stack, n, M)
 
