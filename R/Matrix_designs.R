@@ -71,12 +71,12 @@ J.nj <- function(n.j, average = FALSE){
 
                       if (average == TRUE) {
 
-                        j.nj.output <- tcrossprod(iota.nj(n.j)) / n.j
+                        j.nj.output <- matrix(1 / n.j, nrow = n.j, ncol = n.j)           
 
                       }
                       else {
 
-                        j.nj.output <- tcrossprod(iota.nj(n.j))
+                        j.nj.output <- matrix(1, nrow = n.j, ncol = n.j)       ### create 1 matrix
 
                       }
 

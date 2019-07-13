@@ -48,7 +48,7 @@ mvam <- function(x, y, col_category, comp_effect = NULL, ...){
                   }
                   
                   z_stack <- Z.var(x, M, col_category, intercept = T)
-                  x_stack <- Z.var(x, M, col_category, intercept = F, within_transform = F)
+                  x_stack <- Z.var(x, M, col_category, intercept = F)
                   y_stack <- Y.var(y, M, col_category, within_transform = F)
 
 
@@ -58,7 +58,7 @@ mvam <- function(x, y, col_category, comp_effect = NULL, ...){
                   
 
                   params <- sigma_estimation(wx, wy, z_stack, x_stack, y_stack, df)
-
+            
                   beta <- params[[1]]
                   e <- params[[2]] 
                   sigma.sq <- params[[3]] 
@@ -112,6 +112,7 @@ umvam <- function(x, y, col_category, comp_effect = NULL, ...){
                     va_[,1] <- idj
                     
                     return(va_)
+                    
   
 }
 
