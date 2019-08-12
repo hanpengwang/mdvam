@@ -30,6 +30,7 @@ QH_ <- function(data.x, M, R, n, category ){
                                                   Z2 <- Zj.var(M, selected_xs_j2, with_intercept = T, Nx = (ncol(Xs) - 1))
                                                   this.block <-  0 - Z1%*%tcrossprod(R,Z2)
                                                   if (j1 == j2){
+                                                    
                                                                 this.block <- Diagonal(M * n[j1]) + this.block
                                                                 }
                                                   list.QHj[[j2]] <- as.matrix(this.block %*% t(as.matrix(H.j(M,n[j2]))))

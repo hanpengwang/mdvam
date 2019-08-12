@@ -11,3 +11,7 @@
 #' @return This function returns a phrase to print, with or without an
 #'    exclamation point added. As a side effect, this function also prints out
 #'    the phrase.
+
+#' @useDynLib mvam
+#' @importFrom Rcpp sourceCpp
+NULL

@@ -95,7 +95,10 @@ VA_estimation <- function(lambda.tilde.mle, beta.mle, l.Omega.inv, J, Y, Z, n, M
                                 
                                 
                                 gamma <- t(do.call(cbind, lst.gamma))
+                                browser()
                                 return(gamma)
+                                
+                                
                                 #-----------------------------------------------------------------
                                 # match university ID with gamma.mj's
                                 

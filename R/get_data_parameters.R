@@ -22,30 +22,30 @@
 #
 #
 #
-library(devtools);library(Matrix); library(MASS)
+#library(devtools);library(Matrix); library(MASS)
 #data2 <- read.csv('data_uni.csv')
-# # # data <- read.csv('C:/Users/wangh/OneDrive/Desktop/simce.csv')
+ #data <- read.csv('C:/Users/wangh/OneDrive/Desktop/simce.csv')
 #  schools2 <- data2['idj']
 #  X2 = data2[,c(2:7, 16:21)]
-#  Y2 = data2[names(data2) %in% c("mod_comunica_escrita_punt", "mod_ingles_punt", "mod_lectura_critica", "mod_razona_cuantitativo_punt", "mod_comp_ciudadanas_punt"),]
+# #  Y2 = data2[names(data2) %in% c("mod_comunica_escrita_punt", "mod_ingles_punt", "mod_lectura_critica", "mod_razona_cuantitativo_punt", "mod_comp_ciudadanas_punt"),]
+# # # 
+# # test_result <- mvam(X2,Y2, schools2)
 # # 
-# test_result <- mvam(X2,Y2, schools2)
-# 
+# # #
 # #
-#
-
-# # data2 <- read.csv('data_uni.csv')
-# data <- read.csv('C:/Users/wangh/OneDrive/Desktop/simce.csv')
-# schools <- new_data['rbd4b']
-#X <- new_data[, c(4:7,12:13)]
-# Y <- new_data[, c(9:11)]
-#schools <- data['rbd4b']
-# X <- data[, c(2:7)]head
+# 
+# # # data2 <- read.csv('data_uni.csv')
+# data <- read.csv('C:/Users/wangh/OneDrive/Desktop/simce_2013-15_4b2b.csv')
+#  schools <- data['rbd4b']
+# #X <- new_data[, c(4:7,12:13)]
+# # Y <- new_data[, c(9:11)]
+# #schools <- data['rbd4b']
+# X <- data[, c(2:7,12:32)]
 # Y <- data[, c(9:11)]
-#beta.w <- solve(crossprod(test[[1]])) %*% crossprod(test[[1]], test[[2]])
-
-# idj <- as.matrix(unlist(unique(schools)))
-# n <- as.matrix(table(schools))
+# #beta.w <- solve(crossprod(test[[1]])) %*% crossprod(test[[1]], test[[2]])
+# 
+# # idj <- as.matrix(unlist(unique(schools)))
+# # n <- as.matrix(table(schools))
 #
 #
 #

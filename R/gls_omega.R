@@ -6,7 +6,7 @@ omegaj.fn <- function(M, n.j, sigma.sq, lambda.j){
                           omega.j <- (lambda.j) %x% J.nj + diag(1, nrow = M * n.j) %x% sigma.sq
                           return(omega.j)
 
-5
+
 }
 
 gls_omega <- function(M, sigma.sq, lambda.tilde, groups){
@@ -19,6 +19,9 @@ gls_omega <- function(M, sigma.sq, lambda.tilde, groups){
                                 lambda_j <- diag(M)
 
                                 J <- length(groups)
+                                
+                                browser()
+                                
                                 for (j in 1:J){
 
                                               lambdaj <- lambda_j  # depends on M

@@ -53,7 +53,6 @@ Zj.var <- function(M, data.x, with_intercept = FALSE, Nx){
                     }
                     I <- Diagonal(M) # because we have the same X's for each module
                     Z.j <- as.matrix(I %x% z.j)
-
                     return(Z.j)
                     
 }
@@ -71,12 +70,13 @@ Z.var <- function(data.x, M, category, intercept = FALSE, within_transform = FAL
                   for (j in 1:J) {
                                     selected_category <- unique.category[j]
                                     selected_xs <- Xs[Xs[,1] == selected_category, -1]
-                                
                                     zj <- Zj.var(M, selected_xs, with_intercept = intercept, Nx = (ncol(Xs) - 1) )
                                     
                                     if (within_transform == TRUE) {
+                                                                   
 
                                                                     n.j <- length(selected_xs[,1])
+                                                                    
                                                                     w.j <- Within.j(M, n.j)
                                                                     zj <- w.j %*% zj
 

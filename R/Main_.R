@@ -46,24 +46,25 @@ mvam <- function(x, y, col_category, comp_effect = NULL, ...){
                     x <- cbind(x, comp_col)
 
                   }
+                   
                   
-                  z_stack <- Z.var(x, M, col_category, intercept = T)
-                  x_stack <- Z.var(x, M, col_category, intercept = F)
-                  y_stack <- Y.var(y, M, col_category, within_transform = F)
+                   z_stack <- Z.var(x, M, col_category, intercept = T)
+                   x_stack <- Z.var(x, M, col_category, intercept = F)
+                   y_stack <- Y.var(y, M, col_category)
+                   wx <- Z.var(x, M, col_category, intercept = F, within_transform = T)
+                   wy <- Y.var(y, M, col_category, within_transform = T)
+                   #browser()
 
 
-                  wx <- Z.var(x, M, col_category, intercept = F, within_transform = T)
-                  wy <- Y.var(y, M, col_category, within_transform = T)
-                  
-                  
 
                   params <- sigma_estimation(wx, wy, z_stack, x_stack, y_stack, df)
-            
+
                   beta <- params[[1]]
-                  e <- params[[2]] 
-                  sigma.sq <- params[[3]] 
+                  e <- params[[2]]
+                  sigma.sq <- params[[3]]
+
                   R <- ginv(crossprod(z_stack))
-                  
+
                   QH <- QH_(x, M, R, n, col_category)
 
                   lambda_tilde <- lambda_estimation(x, M, col_category, R, sigma.sq, QH, e)
@@ -72,23 +73,26 @@ mvam <- function(x, y, col_category, comp_effect = NULL, ...){
                   omega.inv <- temp_omega[[1]]
 
                   list_omega <- temp_omega[[2]]
-                  
-                  
+
+
                   term1 <- as.matrix(t(z_stack) %*% (omega.inv) %*% z_stack) ### goes to beta.gls estimation
-                  
+
                   beta.gls <- ginv(term1) %*% (t(z_stack) %*% omega.inv %*% y_stack)
-                  
+
                   lambda_tilde <- lambda_rearrange(lambda_tilde, M)
-                  
+
 
                   Gamma_ <- VA_estimation(lambda_tilde, beta.gls, list_omega, J, y_stack, z_stack, n, M)
 
                   return (cbind(idj, Gamma_))
-
-
-
-
-
+                  
+              
+            
+                  
+              
+                  
+                  
+            
 }
 
 umvam <- function(x, y, col_category, comp_effect = NULL, ...){
