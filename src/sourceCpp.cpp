@@ -1,6 +1,8 @@
-#include <Rcpp.h>
+//#include <Rcpp.h>
+#include "RcppArmadillo.h"
 #include "MultiVar.h"
 using namespace Rcpp;
+using namespace arma;
 /*
 
 // [[Rcpp::export]]
@@ -10,11 +12,11 @@ NumericVector timesTwo(NumericVector x) {
 
 // [[Rcpp::export]]
 void printsomething(){
-  
+
   Rcout << "hello world/n";
   testmodel test;
   test.Printyou();
-  
+
 }
 
 */
@@ -22,7 +24,7 @@ void printsomething(){
 
 // [[Rcpp::export]]
 
-mat ValueAdded()
+arma::mat ValueAdded()
   {
-    
+
   }
