@@ -1,12 +1,12 @@
-#' Estimate value added 
+#' Estimate value added
 #'
 #'
 #' @param x dependent variables
 #' @param y indenpent variables, can be one or multiple for each observation
-#' @param col_category this is a vector where each value corresponding each observation's id 
+#' @param col_category this is a vector where each value corresponding each observation's id
 #' @param comp_effcet default null. a vector contains variables names which you want to create composition effects
 #' @param ... for future implementation
-#' 
+#'
 #' @return This function returns a phrase to print, with or without an
 #'    exclamation point added. As a side effect, this function also prints out
 #'    the phrase.
@@ -46,8 +46,8 @@ mvam <- function(x, y, col_category, comp_effect = NULL, ...){
                     x <- cbind(x, comp_col)
 
                   }
-                   
-                  
+
+
                    z_stack <- Z.var(x, M, col_category, intercept = T)
                    x_stack <- Z.var(x, M, col_category, intercept = F)
                    y_stack <- Y.var(y, M, col_category)
@@ -69,7 +69,12 @@ mvam <- function(x, y, col_category, comp_effect = NULL, ...){
 
                   lambda_tilde <- lambda_estimation(x, M, col_category, R, sigma.sq, QH, e)
 
+
+
                   temp_omega <- gls_omega(M, sigma.sq, lambda_tilde, n)
+
+
+
                   omega.inv <- temp_omega[[1]]
 
                   list_omega <- temp_omega[[2]]
@@ -84,15 +89,16 @@ mvam <- function(x, y, col_category, comp_effect = NULL, ...){
 
                   Gamma_ <- VA_estimation(lambda_tilde, beta.gls, list_omega, J, y_stack, z_stack, n, M)
 
-                  return (cbind(idj, Gamma_))
-                  
-              
-            
-                  
-              
-                  
-                  
-            
+                  #return (list(cbind(idj, Gamma_), omega.inv))
+                  return(Gamma_)
+
+
+
+
+
+
+
+
 }
 
 umvam <- function(x, y, col_category, comp_effect = NULL, ...){
@@ -110,14 +116,14 @@ umvam <- function(x, y, col_category, comp_effect = NULL, ...){
                         x_comp <- cbind(x, comp_col)
                         va_ <- va_multiple(x, y, n,  x_comp)
                       }
-                    
+
                     va_ <- va_multiple(x = x, y = y, n = n)
-                    
+
                     va_[,1] <- idj
-                    
+
                     return(va_)
-                    
-  
+
+
 }
 
 

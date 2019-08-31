@@ -1,29 +1,61 @@
 #include "MultiVar.h"
 //#include <Rcpp.h>
 #include "RcppArmadillo.h"
+#include <algorithm>
 
+using namespace Rcpp;
 using namespace arma;
+using namespace std;
+
+
 // [[Rcpp::depends(RcppArmadillo)]]
 
-MultiVar::MultiVar(List a, List b, List c)
+
+/*
+MultiVar::MultiVar(List a, List b, int InputM, int InputN, colvec InputNj,
+         int InputK, int InputJ, int InputDF)
   {
     DataY = a;
     DataX = b;
-    DataJ = c;
+    int M = InputM; //number of Ys
+    int N = InputN; //total obervations
+    colvec Nj = InputNj; //obervations for each category
+    int K = InputK; //number of Xs (exclude constant regressor)
+    int J = InputJ; //number of Categories
+    int DF; // degree of freedom
+
   }
+*/
+MultiVar::MultiVar(){}
 
 MultiVar::~MultiVar(){}
 
+void MultiVar::SetData(List a, List b, int InputM, int InputN, colvec InputNj,
+                       int InputK, int InputJ, int InputDF)
+  {
+    DataY = a;
+    DataX = b;
+    M = InputM; //number of Ys
+    N = InputN; //total obervations
+    Nj = InputNj; //obervations for each category
+    K = InputK; //number of Xs (exclude constant regressor)
+    J = InputJ; //number of Categories
+    DF = InputDF; // degree of freedom
 
-void MultiVar::UpdateParameters(int InputM, int InputN,
-                                int InputK, int InputJ, int InputDF)
+  }
+
+
+void MultiVar::UpdateData()
 
   {
-    M = InputM;
-    N = InputN;
-    K = InputK;
-    J = InputJ;
-    DF = InputDF;
+    Z = zeros<mat>((N * M), ((K+1)*M));
+    X = zeros<mat>((N * M), (K*M));
+    Y = zeros<mat>((N * M), 1);
+    WithinX = zeros<mat>((N * M), (K*M));
+    WithinY = zeros<mat>((N * M), 1);
+    MDiag = eye<mat>(M,M);
+    Gamma = zeros<mat>(M, J);
+    QH = zeros<mat>((N * M), Nj.n_rows * M);
 
   }
 
@@ -40,24 +72,33 @@ void MultiVar::DataTransform()
       {
         int nj = Nj[i];
         mat wj = Withinj(nj);
-        mat y = DataY[i]; y.set_size((nj * M), 1);
+        mat y = DataY[i];
+        y.set_size((nj * M), 1);
         mat withiny = wj * y;
-        mat x = DataX[i]; x = MDiag * x;
+        mat x = DataX[i];
         mat onevec(nj, 1, fill::ones);
-        mat z = join_horiz(onevec, x); z = MDiag * z;
+        mat z = join_horiz(onevec, x);
+        x = kron(MDiag, x);
+        z = kron(MDiag, z);
         mat withinx = wj * x;
+        ListZ.push_back(z);
 
-        ListZ[i] = z;
+
 
         //fill each category matrices into variable matrices;
 
         LastR = FirstR + nj * M - 1;
 
         Z.submat(FirstR, FirstC, LastR, LastC_Z) = z;
+        //cout << "done" << "z" << endl;
         X.submat(FirstR, FirstC, LastR, LastC_X) = x;
-        Y.submat(FirstR, FirstC, LastR, LastC_Y) = z;
+        //cout << "done" << "x" << endl;
+        Y.submat(FirstR, FirstC, LastR, LastC_Y) = y;
+        //cout << "done" << "y" << endl;
         WithinX.submat(FirstR, FirstC, LastR, LastC_X) = withinx;
-        WithinY.submat(FirstR, FirstC, LastR, LastC_Y) = withinx;
+        //cout << "done" << "wx" << endl;
+        WithinY.submat(FirstR, FirstC, LastR, LastC_Y) = withiny;
+        //cout << "done" << "wy" << endl;
 
         FirstR = LastR + 1;
 
@@ -80,8 +121,6 @@ void MultiVar::SigmaEst()
     SigmaSquare = rss / DF;
     Beta = solve((Z.t() * Z) , (Z.t() * Y));
     e = Y - Z * Beta;
-
-
     R = inv((Z.t() * Z));
 
 }
@@ -101,18 +140,14 @@ void MultiVar::GetQH()
 
         for (int i2=0; i2<J; i2++ )
           {
-            int nj2 = Nj[i1];
+            int nj2 = Nj[i2];
             mat Z2 = ListZ[i2];
             mat blocki = 0 - Z1 * (R * Z2.t());
-
-            if(i2 == i1) blocki = eye<mat>(M * nj1, M*nj1);
+            if(i2 == i1) blocki = eye<mat>(M * nj1, M*nj1) + blocki;
             mat QHj1j2 = blocki * Hj(nj2).t();
-
             FirstC = i2 * M;
             LastC = FirstC + M -1;
-
             QH.submat(FirstR, FirstC, LastR, LastC) = QHj1j2;
-
 
         }
         FirstR = LastR + 1;
@@ -127,48 +162,81 @@ void MultiVar::Lambda()
     colvec b = zeros<colvec>((J*M*(M+1)/2), 1);
     mat Gamma = zeros<mat>((J*M*(M+1)/2), (J*M*(M+1)/2));
     colvec ej;
+
     for (int j=0; j<J; j++ )
       {
+        int AlphajCount = 0;
         int FirstR_Gamma = j * M*(M+1)/2;
         int LastR_Gamma = (j + 1) * M*(M+1)/2 - 1;
         mat Alphaj = zeros<mat>(M*(M+1)/2,J);
-        int AlphajCount = 0;
         int nj = Nj[j];
         int j2 = M * sum(Nj.subvec(0, j));
+
+        //cout<<"j2 is " << j2 <<endl;
+
+
         if(j == 0)
           {
           //int j1 =  M * as_scalar(sum(Nj.subvec(0, 0)));
-          ej = e.subvec(0, j2);
+          ej = e.subvec(0, (j2-1));
+
+          //cout<<"ej size " << ej.size() <<endl;
+
           }
+
         else
           {
-          int j1 = M * as_scalar(sum(Nj.subvec(0, (j-1))));
-          ej = e.subvec(j1, j2);
+
+          int j1 = M * sum(Nj.subvec(0, j-1));
+
+          //cout<<"j1 " << j1 <<endl;
+
+          ej = e.subvec(j1, j2-1);
+
+          //cout<<"ej size " << ej.size() <<endl;
+
           }
 
         mat Zj = ListZ[j];
 
         for (int p=1; p<=M; p++ )
           {
+            //cout<<"going here 222--------- " <<endl;
+
             sp_mat Pp = Pjm(p, j, nj);
             sp_mat Ppj = Pjmj(p, nj);
             colvec ejp = Ppj * ej;
+
+            //cout<<"finish p " << p <<endl;
+
+
             for (int q=p; q<=M; q++ )
               {
                 sp_mat Pq = Pjm(q, j, nj);
                 sp_mat Pqj = Pjmj(q, nj);
                 mat QjTilde = eye<mat>(M*nj, M*nj) - Zj * (R * Zj.t());
                 double vjpq = as_scalar(ejp.t() * Pqj * ej);
-                double bjpq = SigmaSquare * sum((Pqj * (QjTilde * Pqj.t())).diag());
+                double bjpq = SigmaSquare * sum((Pqj * (QjTilde * Ppj.t())).diag());
                 mat Apq = (Pp * QH).t() * (Pq * QH);
 
+                //Alpha.push_back(Apq);
+
                 rowvec Alphajlpq(J);
+
+                //cout<<"finish q " << q <<endl;
+
                 for (int d=0; d<=(J-1); d++ )
                   {
                    int d1 = d*M;
                    int d2 = d*M + M - 1;
                    mat Apqj = Apq.submat(d1,d1,d2,d2);
                    Alphajlpq(d) = Apqj(p-1,q-1);
+                   //cout << "--------------------"<<endl;
+                   //cout<< Apqj<< endl;
+
+                   //cout<< d1 << " " << d2 << endl;
+
+                   //cout<<"finish d " << d <<endl;
 
                   }
                 v(vbCount) = vjpq;
@@ -179,6 +247,7 @@ void MultiVar::Lambda()
 
 
               }
+            //Alpha.push_back(Alphaj);
           }
         for (int l=0; l<J; l++ )
           {
@@ -186,27 +255,43 @@ void MultiVar::Lambda()
             int FirstC_Gamma = l * M*(M+1)/2;
             int LastC_Gamma = (l+1) * M*(M+1)/2 - 1;
             Gamma.submat(FirstR_Gamma, FirstC_Gamma, LastR_Gamma, LastC_Gamma) = diagmat(Alphaj.col(l));
+            //mat DiagAlpha(Alphaj.col(l).n_rows,Alphaj.col(l).n_rows);  DiagAlpha.eye();
+            //Gamma.submat(FirstR_Gamma, FirstC_Gamma, LastR_Gamma, LastC_Gamma) = Alphaj.col(l)[0] * DiagAlpha; Alpha.push_back(Alphaj.col(l)[0] * DiagAlpha);
           }
+
+        //cout<<"done " << j <<endl;
+
       }
-    mat LambdaTilde_ = solve(Gamma,(v-b));
+
+
+    mat LambdaTilde_ = solve(Gamma, (v-b));
+
 
     LambdaTilde_.reshape((M*(M-1)/2 + M),J);
-
 
     //-------------------------------------rearrange lambdatilde---------------------------------------------------------
 
     int offset = 0;
-    std::vector<int> Cols(M);
-    Cols[0] = offset;
+    colvec Rows(M);
+    Rows(0) = offset;
     int temp = 0;
     for(int i=1;i<=(M-1);i++)
       {
 
         offset = offset + M -temp;
         temp++;
-        Cols[i] = offset;
+        Rows(i) = offset;
+
+
       }
 
+    colvec sequence = linspace(0, LambdaTilde_.n_rows - 1, LambdaTilde_.n_rows);
+    colvec difference = SetDiff(sequence, Rows);
+    colvec AllRows = join_cols(Rows, difference);
+
+
+    //LambdaTilde = LambdaTilde_.rows(AllCols);
+    /*
     std::vector<int> Cols2((M*(M+1)/2));
     std::iota(Cols2.begin(), Cols2.end(), 0);
 
@@ -219,11 +304,13 @@ void MultiVar::Lambda()
     LambdaCols.insert(LambdaCols.end(), diff.begin(), diff.end());
 
     LambdaTilde.set_size(LambdaTilde_.n_rows, LambdaTilde_.n_cols);
-
-    for(int i; i<(M*(M+1)/2); i++)
+*/
+    LambdaTilde.set_size((M*(M+1)/2), J);
+    for(int i=0; i<(M*(M+1)/2); i++)
       {
-        LambdaTilde.col(i) = LambdaTilde_.col(LambdaCols[i]);
+        LambdaTilde.row(i) = LambdaTilde_.row(AllRows[i]);
       }
+    LambdaUnarranged = LambdaTilde_;
 
   }
 
@@ -233,28 +320,48 @@ void MultiVar::Omega()
 
     for(int i=0; i<J; i++)
       {
+        //cout << "going here 1--------------------" << endl;
         int nj = Nj[i];
-        colvec LambdaTildeJ = LambdaTilde.col(i);
+        colvec LambdaTildeJ = LambdaUnarranged.col(i);
         mat LambdaJ = zeros<mat>(M, M);
 
+        LambdaJ = FillTri(LambdaJ, LambdaTildeJ, true);
+
+
+        /*
         int FirstI = 0;
         int LastI = M-1;
+        //cout << "going here 2--------------------" << endl;
         for(int i2=0; i2<M; i2++ )
           {
             LambdaJ.submat(i2,i2,M-1,i2) = LambdaTildeJ.subvec(FirstI, LastI);
             FirstI = LastI + 1;
             LastI = FirstI + (M-i2-2);
+            //cout << "going here 3--------------------" << endl;
           }
+         */
         mat DiagLambdaJ = diagmat(LambdaJ);
         LambdaJ = LambdaJ + LambdaJ.t() - DiagLambdaJ;
+        //Lambdaj.push_back(LambdaJ);
+
+        //cout << "going here 4--------------------" << endl;
 
         mat Jnj = ones<mat>(nj, nj);
+        //cout << "going here 5--------------------" << endl;
         mat KronMat = kron(LambdaJ, Jnj);
+        //cout << "going here 6--------------------" << endl;
         mat EyeMat = eye<mat>(M*nj,M*nj);
         mat Omegaj = KronMat + EyeMat*SigmaSquare;
-        OmegaList[i] = inv(Omegaj);
+        //cout << "going here 7--------------------" << endl;
+        OmegaList.push_back(inv(Omegaj));
+        //cout << "going here 8--------------------" << endl;
 
       }
+    //cout << "going here 9--------------------" << endl;
+
+    //mat omega0 = OmegaList[0];
+    //cout << omega0.n_rows<< " " << omega0.n_cols<< endl;
+
     OmegaMat = bdiag(OmegaList);
 
   }
@@ -266,11 +373,12 @@ void MultiVar::VA()
     colvec Njm = Nj * M;
     int VGlsFirst = 0;
     int VGlsLast;
+    //cout << "going here 3--------------------" << endl;
     for(int i=0;i<J;i++)
       {
-        colvec TempLambdaJ = LambdaTilde.col(i);
+        colvec TempLambdaJ = LambdaUnarranged.col(i);
 
-        int VecLength = TempLambdaJ.n_rows; //15
+        int VecLength = TempLambdaJ.n_elem; //15
 
 
         mat VCMLambdaJ = zeros<mat>(M,M);
@@ -278,26 +386,32 @@ void MultiVar::VA()
         int LastI = FirstI + M - 1;
         for(int i2=0; i2<M; i2++)
           {
-            VCMLambdaJ.diag(i2) = TempLambdaJ.subvec(FirstI, LastI);
-            VCMLambdaJ.diag(-i2) = TempLambdaJ.subvec(FirstI, LastI);
+            VCMLambdaJ.submat(i2,i2,M-1,i2) = TempLambdaJ.subvec(FirstI, LastI);
+            VCMLambdaJ.submat(i2,i2,i2,M-1) = TempLambdaJ.subvec(FirstI, LastI).t();
+            //VCMLambdaJ.diag(-i2) = TempLambdaJ.subvec(FirstI, LastI);
             FirstI = LastI + 1;
             LastI = FirstI + (M-i2-2);
 
 
 
           }
+        //Lambdaj.push_back(VCMLambdaJ);
+
         int njm = Njm[i];
         int nj = Nj[i];
-        VGlsLast = VGlsFirst + njm;
+        VGlsLast = VGlsFirst + njm - 1;
 
         mat OmegaJ = OmegaList[i];
-        mat Iotanj = ones<mat>(nj,nj);
+        mat Iotanj = ones<rowvec>(nj);
+        //cout << VCMLambdaJ.n_rows<< " " << VCMLambdaJ.n_cols  << endl;
         mat a = kron(VCMLambdaJ.t(), Iotanj);
+        //cout << a.n_rows<< " " << a.n_cols  << endl;
         mat Gammaj = a * OmegaJ * VGls.subvec(VGlsFirst, VGlsLast);
+        //cout << "going here 2--------------------" << endl;
         Gamma.col(i) = Gammaj;
         VGlsFirst = VGlsLast + 1;
 
-
+        //cout << "done " << i<< endl;
 
 
 
@@ -321,7 +435,7 @@ void MultiVar::VA()
 
 //------------------------some useful matrices------------------------------------------------------------------------------------------------------------------------------------
 
-mat MultiVar::Withinj(int nj)
+mat MultiVar::Withinj(int& nj)
   {
     int MatSize = nj * M;
     mat Jnj = (ones<mat>(nj,nj)) / nj;
@@ -330,7 +444,7 @@ mat MultiVar::Withinj(int nj)
   }
 
 
-mat MultiVar::Hj(int nj)
+mat MultiVar::Hj(int& nj)
   {
     mat OneMat = ones<mat>(1, nj);
     return bdiag(OneMat, M);
@@ -339,7 +453,7 @@ mat MultiVar::Hj(int nj)
   }
 
 
-sp_mat MultiVar::Pjmj(int &m, int &nj)
+sp_mat MultiVar::Pjmj(int& m, int& nj)
   {
     int n_row = nj;
     int n_col = (m - 1) * nj + nj + (M - m) * nj;
@@ -350,13 +464,21 @@ sp_mat MultiVar::Pjmj(int &m, int &nj)
   }
 
 
-sp_mat MultiVar::Pjm(int &m, int &j, int &nj)
+sp_mat MultiVar::Pjm(int& m, int& j, int& nj)
   {
+    int FirstC;
     int n_row = nj;
     int n_col = (N - nj) * M + (m - 1) * nj + nj + (M - m) * nj;
     sp_mat p(n_row, n_col);
     sp_mat insert = Pjmj(m, nj);
-    int FirstC = sum(Nj.subvec(0, (j - 1)));
+    if (j == 0)
+      {
+        FirstC = 0;
+      }
+    else
+      {
+        FirstC = M * sum(Nj.subvec(0, (j - 1)));
+      }
     int LastC = FirstC + (m - 1) * nj + nj + (M - m) * nj - 1;
     p.cols(FirstC, LastC) = insert;
 
@@ -364,7 +486,7 @@ sp_mat MultiVar::Pjm(int &m, int &j, int &nj)
   }
 
 
-mat MultiVar::bdiag(const mat& dmat, int size)
+mat MultiVar::bdiag(const mat& dmat, int& size)
   {
     mat bdm = zeros<mat>(dmat.n_rows * size, dmat.n_cols * size);
     for (int i = 0; i < size; ++i)
@@ -383,21 +505,61 @@ mat MultiVar::bdiag(const mat& dmat, int size)
 
 mat MultiVar::bdiag(const List& ListMat)
 {
-  int size = ListMat.size();
-  mat dmat = ListMat[0];
-
-  mat bdm = zeros<mat>(dmat.n_rows * size, dmat.n_cols * size);
-  for (int i = 0; i < size; ++i)
+  int FirstRC = 0;
+  int LastRC;
+  colvec Mnj = Nj * M;
+  mat bdm = zeros<mat>(M*N, M*N);
+  for (int i = 0; i < J; ++i)
   {
-    int FirstR = i * dmat.n_rows;
-    int FirstC = i * dmat.n_cols;
-    int LastR = FirstR + dmat.n_rows - 1  ;
-    int LastC = FirstC + dmat.n_cols - 1 ;
-    mat BlockMat = ListMat[i];
-    bdm.submat(FirstR, FirstC, LastR, LastC) = BlockMat;
+    LastRC = FirstRC + Mnj[i] - 1;
+    //cout << FirstRC << " " << LastRC << endl;
+    mat Omegaj = ListMat[i];
+    bdm.submat(FirstRC, FirstRC, LastRC, LastRC) = Omegaj;
+    FirstRC = LastRC + 1;
   }
 
   return bdm;
 }
 
+arma::colvec MultiVar::SetDiff(arma::colvec& x, arma::colvec& y) {
+
+  std::vector<int> a = arma::conv_to< std::vector<int> >::from(arma::sort(x));
+  std::vector<int> b = arma::conv_to< std::vector<int> >::from(arma::sort(y));
+  std::vector<int> out;
+
+  std::set_difference(a.begin(), a.end(), b.begin(), b.end(),
+                      std::inserter(out, out.end()));
+
+  return arma::conv_to<arma::colvec>::from(out);
+}
+
+
+mat MultiVar::FillTri(mat& FillMat, colvec& ValueVec, bool diag)
+  {
+    int nrow = FillMat.n_rows;
+    int ncol = FillMat.n_cols;
+    int VecLen = ValueVec.n_elem;
+    //if(nrow != ncol) stop("matrix must be symetric");
+    //if(diag == true && (nrow**2 - 1/2 * nrow)!= VecLen  ) stop("lengths are different")
+    //if(diag == false && (nrow**2)!= VecLen  ) stop("lengths are different")
+
+    // vertical fill , fill columm 1 then 2 ,3 ...........
+    int VecCount = 0;
+    if(diag == true )
+      {
+        for(int pcol=0; pcol<ncol; pcol++)
+          {
+            for(int prow=pcol; prow<nrow; prow++)
+              {
+                FillMat(prow, pcol) = ValueVec[VecCount];
+                VecCount++;
+              }
+          }
+      }
+
+    return FillMat;
+
+
+
+  }
 

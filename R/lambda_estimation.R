@@ -1,7 +1,5 @@
 lambda_estimation <- function(data.x, M, category, R, sigma.sq, QH, e){
 
-
-
       Xs <- as.matrix(cbind(category, data.x))
       n <- as.matrix(table(category))
       J <- length(n)
@@ -58,14 +56,21 @@ lambda_estimation <- function(data.x, M, category, R, sigma.sq, QH, e){
                                                           a.q <- Pq %*% QH
                                                           A.pq <- t(a.p) %*% a.q
 
-                                                          alpha.jl.pq <- numeric(0) ### it's a vector 
+
+
+                                                          alpha.jl.pq <- numeric(0) ### it's a vector
 
                                                           for (d in 0:(J - 1)){
                                                                                 d1 <- (d*M)+1
                                                                                 d2 <- (d*M)+M
                                                                                 Apq.j <- A.pq[d1:d2, d1:d2] # splits into submatrices MxM
                                                                                 alpha.jl.pq[d+1] <- as.matrix(Apq.j[p, q]) # the only non-zero element
+
+
                                                                                 ###rm(Apq.j) remove this rm to save time
+                                                                                #print("------------------------")
+                                                                                #print(Apq.j)
+                                                                                #print(paste(d1,d2, sep = " "))
                                                           }
 
                                                           bj <- rbind(bj, as.matrix(bjpq))
@@ -74,56 +79,61 @@ lambda_estimation <- function(data.x, M, category, R, sigma.sq, QH, e){
                                                           ###rm(Pp,Pq,ejp,ejq,a.p,a.q,A.pq,alpha.jl.pq,vjpq,bjpq,ajpq)
 
                                                   }
+
                                       }
                       #--------------------------------------------------------------------
 
                       b <- rbind(b, bj)
                       v <- rbind(v, vj)
+                      #browser()
                       for (l in 1:J){
 
                                       Gamma.j <- cbind(Gamma.j, diag(alpha.j[,l]))
+                                      #browser()
                       }
 
                       Gamma <- rbind(Gamma, Gamma.j)
                       ###rm(Gamma.j,bj,vj,d1,d2)
-                      
+
       }
       #browser()
-      
+
       lambda.tilde <-  ginv(Gamma) %*% (v - b)
 
       temp <- (M*(M-1)/2) + M
       dim(lambda.tilde) <- c(temp, J)
-      
-      ### rearrange lambda
-      
 
-      
+      ### rearrange lambda
+
+
+
       return(lambda.tilde)
 
 }
 
 
 lambda_rearrange <- function(lambda.tilde, M) {
-        first_row <- 1 
+        first_row <- 1
         row_list <- c(first_row)
         temp <- 0
         for (i in c(1 : (M - 1))) {
-          
-          first_row <- first_row + M - temp 
-          temp <- temp + 1 
+
+          first_row <- first_row + M - temp
+          temp <- temp + 1
           row_list <- append(row_list, first_row)
-          
+          print(first_row)
+
         }
         #browser()
-        lambda.tilde <- lambda.tilde[c(row_list, 
+        lambda.tilde <- lambda.tilde[c(row_list,
                                        setdiff(
-                                         c(1:nrow(lambda.tilde)), row_list 
+                                         c(1:nrow(lambda.tilde)), row_list
                                        )
         ), ]
-        
+
         return(lambda.tilde)
 }
+
 
 
 

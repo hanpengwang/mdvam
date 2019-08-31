@@ -11,6 +11,8 @@ omegaj.fn <- function(M, n.j, sigma.sq, lambda.j){
 
 gls_omega <- function(M, sigma.sq, lambda.tilde, groups){
 
+
+
                                 ### variables needed in this function (M, sigma.sq, lambda.j, groups )
 
                                 lst.omega <- list()
@@ -19,14 +21,15 @@ gls_omega <- function(M, sigma.sq, lambda.tilde, groups){
                                 lambda_j <- diag(M)
 
                                 J <- length(groups)
-                                
-                                browser()
-                                
+
+                                #browser()
+
                                 for (j in 1:J){
 
                                               lambdaj <- lambda_j  # depends on M
                                               lambdaj[lower.tri(lambdaj, diag=TRUE)] <- lambda.tilde[,j]
                                               lambdaj[upper.tri(lambdaj, diag=FALSE)] <- 0
+                                              #browser()
                                               lambdaj <- lambdaj + t(lambdaj) - diag(diag(lambdaj)) # this is our \lambda^j matrix
 
                                               lst.lambda[[j]] <- lambdaj
@@ -41,8 +44,8 @@ gls_omega <- function(M, sigma.sq, lambda.tilde, groups){
                                 }
 
                                 omega.inv <- bdiag(lst.omega)
-                                
-                                
+
+
 
                                 return(list(omega.inv, lst.omega))
 

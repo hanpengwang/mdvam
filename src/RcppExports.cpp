@@ -6,19 +6,32 @@
 
 using namespace Rcpp;
 
-// ValueAdded
-arma::mat ValueAdded();
-RcppExport SEXP _mvam_ValueAdded() {
+// testfunc
+List testfunc(List x);
+RcppExport SEXP _mvam_testfunc(SEXP xSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    rcpp_result_gen = Rcpp::wrap(ValueAdded());
+    Rcpp::traits::input_parameter< List >::type x(xSEXP);
+    rcpp_result_gen = Rcpp::wrap(testfunc(x));
+    return rcpp_result_gen;
+END_RCPP
+}
+// ValueAdded
+arma::mat ValueAdded(List All);
+RcppExport SEXP _mvam_ValueAdded(SEXP AllSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< List >::type All(AllSEXP);
+    rcpp_result_gen = Rcpp::wrap(ValueAdded(All));
     return rcpp_result_gen;
 END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_mvam_ValueAdded", (DL_FUNC) &_mvam_ValueAdded, 0},
+    {"_mvam_testfunc", (DL_FUNC) &_mvam_testfunc, 1},
+    {"_mvam_ValueAdded", (DL_FUNC) &_mvam_ValueAdded, 1},
     {NULL, NULL, 0}
 };
 
