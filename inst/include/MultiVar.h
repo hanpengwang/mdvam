@@ -1,6 +1,6 @@
 #ifndef __MultiVarHeader__
 #define __MultiVarHeader__
-
+//#define ARMA_64BIT_WORD
 //#include <Rcpp.h>
 //#include <Rcpp.h>
 #include "RcppArmadillo.h"
@@ -19,9 +19,7 @@ class MultiVar
 
   {
 
-public:
-  List Lambdaj;
-
+private:
 
 //---------------Data&Params from original-------------
   int M; //number of Ys
@@ -52,7 +50,7 @@ public:
   mat OmegaMat;
   List OmegaList;
 
-//public:
+public:
 
   //-------------------------
 
@@ -79,8 +77,8 @@ public:
   sp_mat Pjmj(int& m, int& nj);
   sp_mat Pjm(int& m, int& j, int& nj);
   mat bdiag(const mat& dmat, int &size);
+  //mat bdiag(const List& ListMat);
   mat bdiag(const List& ListMat);
-
   //some useful methods
   colvec SetDiff(colvec& x, colvec& y);
   mat FillTri(mat& FillMat, colvec& ValueVec, bool diag);

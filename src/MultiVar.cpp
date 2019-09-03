@@ -1,5 +1,5 @@
+//#define ARMA_64BIT_WORD
 #include "MultiVar.h"
-//#include <Rcpp.h>
 #include "RcppArmadillo.h"
 #include <algorithm>
 
@@ -41,6 +41,7 @@ void MultiVar::SetData(List a, List b, int InputM, int InputN, colvec InputNj,
     K = InputK; //number of Xs (exclude constant regressor)
     J = InputJ; //number of Categories
     DF = InputDF; // degree of freedom
+
 
   }
 
@@ -327,11 +328,12 @@ void MultiVar::Omega()
 
         LambdaJ = FillTri(LambdaJ, LambdaTildeJ, true);
 
+        //cout << "going here 2--------------------" << endl;
 
         /*
         int FirstI = 0;
         int LastI = M-1;
-        //cout << "going here 2--------------------" << endl;
+        cout << "going here 2--------------------" << endl;
         for(int i2=0; i2<M; i2++ )
           {
             LambdaJ.submat(i2,i2,M-1,i2) = LambdaTildeJ.subvec(FirstI, LastI);
@@ -357,12 +359,12 @@ void MultiVar::Omega()
         //cout << "going here 8--------------------" << endl;
 
       }
-    //cout << "going here 9--------------------" << endl;
 
     //mat omega0 = OmegaList[0];
     //cout << omega0.n_rows<< " " << omega0.n_cols<< endl;
 
     OmegaMat = bdiag(OmegaList);
+    //Omegabdiag(OmegaList);
 
   }
 
@@ -512,7 +514,6 @@ mat MultiVar::bdiag(const List& ListMat)
   for (int i = 0; i < J; ++i)
   {
     LastRC = FirstRC + Mnj[i] - 1;
-    //cout << FirstRC << " " << LastRC << endl;
     mat Omegaj = ListMat[i];
     bdm.submat(FirstRC, FirstRC, LastRC, LastRC) = Omegaj;
     FirstRC = LastRC + 1;

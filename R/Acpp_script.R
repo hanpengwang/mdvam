@@ -30,9 +30,9 @@ cppmvam <-
     if (nrow(y)!=N || nrow(j)!=N) stop("x,y,j should have the same number of obeservations")
     if (ncol(j)!=1) stop("each obeservation should have only one category")
 
-    if (is.null(colnames(x))) Xnames <- paste('x', c(1:ncol(x)), sep = "")
+    if (is.null(colnames(x))) {Xnames <- paste('x', c(1:ncol(x)), sep = ""); colnames(x) = Xnames}
     else Xnames <- colnames(x)
-    if (is.null(colnames(y))) Ynames <- paste('y', c(1:ncol(x)), sep = "")
+    if (is.null(colnames(y))) Ynames <- paste('y', c(1:ncol(y)), sep = "")
     else Ynames <- colnames(y)
     if (is.null(colnames(j))) Jnames <- c("J")
     else Jnames <- colnames(j)
@@ -46,20 +46,31 @@ cppmvam <-
 
     data_jyx <- cbind(j, y, x); colnames(data_jyx) <- c(Jnames, Ynames, Xnames)
 
+    if ( !is.null(comp_effect)) {
+
+      comp_df <- cbind(j , x[,c(comp_effect)])
+      comp_col <- comp_create(comp_df, Nj)
+      data_jyx <- cbind(data_jyx, comp_col)
+      Xnames <- c(Xnames, colnames(comp_col))
+
+
+    }
+
     Xlist <- list()
     Ylist <- list()
     for (j in c(1:J))
     {
       jname <- uniqueJ[j]
-      dfj <- data_jyx[data_jyx[,Jnames] == jname, ]
+      dfj <- as.matrix(data_jyx[data_jyx[,Jnames] == jname, ])
       Xlist[[j]] <- dfj[,Xnames]
       Ylist[[j]] <- dfj[,Ynames]
+
     }
     All <- list(Ylist, Xlist, M, N, Nj,
                 K, J, DF)
 
-    Gamma <- ValueAdded(All)
-    return(Gamma)
+
+    return(All)
     ##---1. split dataX, Y, M into list elements;
     ##---2. get params N, M etc.
 

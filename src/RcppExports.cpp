@@ -6,17 +6,6 @@
 
 using namespace Rcpp;
 
-// testfunc
-List testfunc(List x);
-RcppExport SEXP _mvam_testfunc(SEXP xSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< List >::type x(xSEXP);
-    rcpp_result_gen = Rcpp::wrap(testfunc(x));
-    return rcpp_result_gen;
-END_RCPP
-}
 // ValueAdded
 arma::mat ValueAdded(List All);
 RcppExport SEXP _mvam_ValueAdded(SEXP AllSEXP) {
@@ -29,9 +18,11 @@ BEGIN_RCPP
 END_RCPP
 }
 
+RcppExport SEXP _rcpp_module_boot_mod();
+
 static const R_CallMethodDef CallEntries[] = {
-    {"_mvam_testfunc", (DL_FUNC) &_mvam_testfunc, 1},
     {"_mvam_ValueAdded", (DL_FUNC) &_mvam_ValueAdded, 1},
+    {"_rcpp_module_boot_mod", (DL_FUNC) &_rcpp_module_boot_mod, 0},
     {NULL, NULL, 0}
 };
 

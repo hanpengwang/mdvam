@@ -1,20 +1,30 @@
 //#include <Rcpp.h>
+//#define ARMA_64BIT_WORD
+
 #include "RcppArmadillo.h"
 #include "MultiVar.h"
+
+
+
 using namespace Rcpp;
 using namespace arma;
 using namespace std;
 
-// [[Rcpp::export]]
-List testfunc(List x) {
-  //x.push_back(1);
-  List y;
-  y.push_back(x[0]);
-  return y;
+/*
 
+// [[Rcpp::depends(RcppArmadillo)]]
+
+// [[Rcpp::export]]
+arma::mat testfunc() {
+  //x.push_back(1);
+
+  arma::mat A(100, 100, fill::zeros);
+  //List ListA;
+  //ListA.push_back(A);
+  return A;
 
 }
-
+*/
 
 
 
@@ -35,6 +45,8 @@ void printsomething(){
 
 // [[Rcpp::export]]
 
+
+
 arma::mat ValueAdded(List All)
   {
 
@@ -46,6 +58,8 @@ arma::mat ValueAdded(List All)
     int K = All[5];
     int J = All[6];
     int DF = All[7];
+
+    //sp_mat SpOmega= All[8];
 
     MultiVar Model;
 
@@ -69,8 +83,14 @@ arma::mat ValueAdded(List All)
     cout << "done " << "omg" << endl;
     Model.VA();
     cout << "done " << "va" << endl;
-    return Model.Gamma;
-
-
+    mat Gamma = Model.Gamma;
+    Gamma = Gamma.t();
+    return Gamma;
 
   }
+
+
+
+
+
+
