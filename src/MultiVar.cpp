@@ -42,7 +42,6 @@ void MultiVar::SetData(List a, List b, int InputM, int InputN, colvec InputNj,
     J = InputJ; //number of Categories
     DF = InputDF; // degree of freedom
 
-
   }
 
 
@@ -505,12 +504,12 @@ mat MultiVar::bdiag(const mat& dmat, int& size)
 
 
 
-mat MultiVar::bdiag(const List& ListMat)
+sp_mat MultiVar::bdiag(const List& ListMat)
 {
   int FirstRC = 0;
   int LastRC;
   colvec Mnj = Nj * M;
-  mat bdm = zeros<mat>(M*N, M*N);
+  sp_mat bdm = sp_mat(M*N, M*N);
   for (int i = 0; i < J; ++i)
   {
     LastRC = FirstRC + Mnj[i] - 1;

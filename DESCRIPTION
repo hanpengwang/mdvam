@@ -1,8 +1,8 @@
-Package: mvam
-Title: Higher dimensional value added model
+Package: mdvam
+Title: Multi-dimensional value added model
 Version: 1.0.1
-Authors: Hanpeng <hanpeng.wang@smu.ca>
-Maintainer: Hanpeng <hanpeng.wang@smu.ca>
+Authors: Joniada Milla <joniada.milla@smu.ca>, Hanpeng <hanpeng.wang@smu.ca>
+Maintainer: Joniada Milla <joniada.milla@smu.ca>, Hanpeng <hanpeng.wang@smu.ca>
 Description: Estimate multiple value added outcomes
 Depends: R (>= 3.5.1)
 License: MIT

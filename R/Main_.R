@@ -1,27 +1,3 @@
-#' Estimate value added
-#'
-#'
-#' @param x dependent variables
-#' @param y indenpent variables, can be one or multiple for each observation
-#' @param col_category this is a vector where each value corresponding each observation's id
-#' @param comp_effcet default null. a vector contains variables names which you want to create composition effects
-#' @param ... for future implementation
-#'
-#' @return This function returns a phrase to print, with or without an
-#'    exclamation point added. As a side effect, this function also prints out
-#'    the phrase.
-#'
-#' @examples
-#' mvam(x, y, col_category)
-#' mvam(x, y, col_category, c('X1','X2',..,'Xm'))
-#'
-#' @export
-
-### variable user guide
-# category : a vector corresponding each id for X and Y
-# groups or n : a vector with number of observations for each category
-# unique.category : set(category)
-
 mvam <- function(x, y, col_category, comp_effect = NULL, ...){
                   data_contain <- data_process(x, y, col_category)
 
@@ -101,7 +77,32 @@ mvam <- function(x, y, col_category, comp_effect = NULL, ...){
 
 }
 
-umvam <- function(x, y, col_category, comp_effect = NULL, ...){
+
+#' univariate value added
+#'
+#'
+#' @param x dependent variables
+#' @param y indenpent variables
+#' @param col_category this is a vector where each value corresponding each observation's id
+#' @param comp_effcet default null. a vector contains variables names which you want to create composition effects
+#' @param ... for future implementation
+#'
+#' @return This function returns a phrase to print, with or without an
+#'    exclamation point added. As a side effect, this function also prints out
+#'    the phrase.
+#'
+#' @examples
+#' mvam(x, y, col_category)
+#' mvam(x, y, col_category, c('X1','X2',..,'Xm'))
+#'
+#' @export
+
+### variable user guide
+# category : a vector corresponding each id for X and Y
+# groups or n : a vector with number of observations for each category
+# unique.category : set(category)
+
+uvam <- function(x, y, col_category, comp_effect = NULL, ...){
 
                     data_contain <- data_process(x, y, col_category)
                     col_category <- data_contain[[1]]

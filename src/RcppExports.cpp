@@ -8,7 +8,7 @@ using namespace Rcpp;
 
 // ValueAdded
 arma::mat ValueAdded(List All);
-RcppExport SEXP _mvam_ValueAdded(SEXP AllSEXP) {
+RcppExport SEXP _mdvam_ValueAdded(SEXP AllSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -18,15 +18,12 @@ BEGIN_RCPP
 END_RCPP
 }
 
-RcppExport SEXP _rcpp_module_boot_mod();
-
 static const R_CallMethodDef CallEntries[] = {
-    {"_mvam_ValueAdded", (DL_FUNC) &_mvam_ValueAdded, 1},
-    {"_rcpp_module_boot_mod", (DL_FUNC) &_rcpp_module_boot_mod, 0},
+    {"_mdvam_ValueAdded", (DL_FUNC) &_mdvam_ValueAdded, 1},
     {NULL, NULL, 0}
 };
 
-RcppExport void R_init_mvam(DllInfo *dll) {
+RcppExport void R_init_mdvam(DllInfo *dll) {
     R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
     R_useDynamicSymbols(dll, FALSE);
 }

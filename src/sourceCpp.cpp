@@ -42,6 +42,7 @@ void printsomething(){
 */
 
 
+// [[Rcpp::depends(RcppArmadillo)]]
 
 // [[Rcpp::export]]
 

@@ -2,6 +2,6 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 ValueAdded <- function(All) {
-    .Call(`_mvam_ValueAdded`, All)
+    .Call(`_mdvam_ValueAdded`, All)
 }
 

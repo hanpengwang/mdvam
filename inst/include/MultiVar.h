@@ -47,7 +47,7 @@ private:
   mat QH;
   mat LambdaTilde;
   mat LambdaUnarranged;
-  mat OmegaMat;
+  sp_mat OmegaMat;
   List OmegaList;
 
 public:
@@ -78,39 +78,12 @@ public:
   sp_mat Pjm(int& m, int& j, int& nj);
   mat bdiag(const mat& dmat, int &size);
   //mat bdiag(const List& ListMat);
-  mat bdiag(const List& ListMat);
+  sp_mat bdiag(const List& ListMat);
   //some useful methods
   colvec SetDiff(colvec& x, colvec& y);
   mat FillTri(mat& FillMat, colvec& ValueVec, bool diag);
 
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

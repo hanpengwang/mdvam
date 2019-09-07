@@ -2,9 +2,9 @@
 #'
 #'
 #' @param x dependent variables
-#' @param y indenpent variables, can be one or multiple for each observation
-#' @param col_category this is a vector where each value corresponding each observation's id
-#' @param comp_effcet default null. a vector contains variables names which you want to create composition effects
+#' @param y indenpent variables, can be one or multiple
+#' @param j this is a vector where each value corresponding each observation's id
+#' @param comp_effcet default null. a vector contains variables names or index which you want to create composition effects
 #' @param ... for future implementation
 #'
 #' @return This function returns a phrase to print, with or without an
@@ -12,8 +12,9 @@
 #'    the phrase.
 #'
 #' @examples
-#' mvam(x, y, col_category)
-#' mvam(x, y, col_category, c('X1','X2',..,'Xm'))
+#' ValueAdded(cppmdvam(x, y, j))
+#' ValueAdded(cppmdvam(x, y, j, c('X1','X2',..,'Xm')))
+#' ValueAdded(cppmdvam(x, y, j, c('1,2,..,n)))
 #'
 #' @export
 
@@ -22,7 +23,7 @@
 # groups or n : a vector with number of observations for each category
 # unique.category : set(category)
 
-cppmvam <-
+cppmdvam <-
   function(x, y, j, comp_effect=NULL, ...)
   {
     x <- as.matrix(x); y <- as.matrix(y); j <- as.matrix(j);
@@ -70,7 +71,7 @@ cppmvam <-
                 K, J, DF)
 
 
-    return(All)
+    return(ValueAdded(All))
     ##---1. split dataX, Y, M into list elements;
     ##---2. get params N, M etc.
 
