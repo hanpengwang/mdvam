@@ -87,9 +87,7 @@ mvam <- function(x, y, col_category, comp_effect = NULL, ...){
 #' @param comp_effcet default null. a vector contains variables names which you want to create composition effects
 #' @param ... for future implementation
 #'
-#' @return This function returns a phrase to print, with or without an
-#'    exclamation point added. As a side effect, this function also prints out
-#'    the phrase.
+#' @return function returns univariate value added outcome for each specific category
 #'
 #' @examples
 #' mvam(x, y, col_category)

@@ -7,9 +7,7 @@
 #' @param comp_effcet default null. a vector contains variables names or index which you want to create composition effects
 #' @param ... for future implementation
 #'
-#' @return This function returns a phrase to print, with or without an
-#'    exclamation point added. As a side effect, this function also prints out
-#'    the phrase.
+#' @return function returns multivariate value added outcome for each specific category
 #'
 #' @examples
 #' ValueAdded(cppmdvam(x, y, j))
@@ -18,10 +16,6 @@
 #'
 #' @export
 
-### variable user guide
-# category : a vector corresponding each id for X and Y
-# groups or n : a vector with number of observations for each category
-# unique.category : set(category)
 
 cppmdvam <-
   function(x, y, j, comp_effect=NULL, ...)
@@ -72,30 +66,7 @@ cppmdvam <-
 
 
     return(ValueAdded(All))
-    ##---1. split dataX, Y, M into list elements;
-    ##---2. get params N, M etc.
 
-    ##--- check data variations
 
   }
 
-# library(usethis);library(devtools)
-# data = read.csv('data_uni.csv')
-# j = data['idj']
-# x = data[,c('quimica_punt', 'fisica_punt', 'ingles_punt')]
-# y = data[,c('lenguaje_punt', 'matematicas_punt', 'ciencias_sociales_punt')]
-
-
-
-# listvar = cppmvam(x,y,j)
-# test = ValueAdded(listvar)
-
-# p1 = listvar[[1]]
-# p2 = listvar[[2]]
-# p3 = listvar[[3]]
-# p4 = listvar[[4]]
-# p5 = listvar[[5]]
-# p6 = listvar[[6]]
-# p7 = listvar[[7]]
-# p8 = listvar[[8]]
-# test = ValueAdded(p1,p2,p3,p4,p5,p6,p7,p8)

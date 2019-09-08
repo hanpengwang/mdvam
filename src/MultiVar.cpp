@@ -11,21 +11,6 @@ using namespace std;
 // [[Rcpp::depends(RcppArmadillo)]]
 
 
-/*
-MultiVar::MultiVar(List a, List b, int InputM, int InputN, colvec InputNj,
-         int InputK, int InputJ, int InputDF)
-  {
-    DataY = a;
-    DataX = b;
-    int M = InputM; //number of Ys
-    int N = InputN; //total obervations
-    colvec Nj = InputNj; //obervations for each category
-    int K = InputK; //number of Xs (exclude constant regressor)
-    int J = InputJ; //number of Categories
-    int DF; // degree of freedom
-
-  }
-*/
 MultiVar::MultiVar(){}
 
 MultiVar::~MultiVar(){}

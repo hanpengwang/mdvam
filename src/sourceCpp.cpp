@@ -10,37 +10,6 @@ using namespace Rcpp;
 using namespace arma;
 using namespace std;
 
-/*
-
-// [[Rcpp::depends(RcppArmadillo)]]
-
-// [[Rcpp::export]]
-arma::mat testfunc() {
-  //x.push_back(1);
-
-  arma::mat A(100, 100, fill::zeros);
-  //List ListA;
-  //ListA.push_back(A);
-  return A;
-
-}
-*/
-
-
-
-/*
-
-// [[Rcpp::export]]
-void printsomething(){
-
-  Rcout << "hello world/n";
-  testmodel test;
-  test.Printyou();
-
-}
-
-*/
-
 
 // [[Rcpp::depends(RcppArmadillo)]]
 

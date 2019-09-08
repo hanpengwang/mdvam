@@ -18,9 +18,7 @@ cppmdvam(x, y, j, comp_effect = NULL, ...)
 \item{comp_effcet}{default null. a vector contains variables names or index which you want to create composition effects}
 }
 \value{
-This function returns a phrase to print, with or without an
-   exclamation point added. As a side effect, this function also prints out
-   the phrase.
+function returns multivariate value added outcome for each specific category
 }
 \description{
 Estimate value added

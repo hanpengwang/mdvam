@@ -20,15 +20,15 @@
 # }
 #
 # j = floor(runif(10**3, 0,5))
-#
+# 
 # va1 = sapply(j, func1)
 # va2 = sapply(j, func2)
 # coefs = c(10, 15, 20, 35, 50)
 # x = matrix(rnorm(10**3*5), nrow = 10**3)
-#
+# 
 # y1 = x %*% coefs
 # y2 = x %*% coefs
-#
+# 
 # y = cbind(y1,y2)
 #
 #
