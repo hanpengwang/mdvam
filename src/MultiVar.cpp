@@ -302,14 +302,14 @@ void MultiVar::Lambda()
 
 void MultiVar::Omega()
   {
-
+    mat LambdaJ_template = zeros<mat>(M, M);
     for(int i=0; i<J; i++)
       {
         //cout << "going here 1--------------------" << endl;
         int nj = Nj[i];
         colvec LambdaTildeJ = LambdaUnarranged.col(i);
-        mat LambdaJ = zeros<mat>(M, M);
-
+        mat LambdaJ = LambdaJ_template;
+        //mat LambdaJ = zeros<mat>(M, M);
         LambdaJ = FillTri(LambdaJ, LambdaTildeJ, true);
 
         //cout << "going here 2--------------------" << endl;
@@ -339,7 +339,13 @@ void MultiVar::Omega()
         mat EyeMat = eye<mat>(M*nj,M*nj);
         mat Omegaj = KronMat + EyeMat*SigmaSquare;
         //cout << "going here 7--------------------" << endl;
+        //clock_t begin = clock();
+        
         OmegaList.push_back(inv(Omegaj));
+        //clock_t end = clock();
+        //double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
+        
+        //cout << elapsed_secs<<endl;
         //cout << "going here 8--------------------" << endl;
 
       }
@@ -489,7 +495,8 @@ mat MultiVar::bdiag(const mat& dmat, int& size)
 
 
 
-sp_mat MultiVar::bdiag(const List& ListMat)
+//sp_mat MultiVar::bdiag(const List& ListMat)
+sp_mat MultiVar::bdiag(const std::vector<mat>& ListMat)
 {
   int FirstRC = 0;
   int LastRC;
@@ -521,26 +528,47 @@ arma::colvec MultiVar::SetDiff(arma::colvec& x, arma::colvec& y) {
 
 mat MultiVar::FillTri(mat& FillMat, colvec& ValueVec, bool diag)
   {
-    int nrow = FillMat.n_rows;
+     /*
+      * FillMat is a symmetric matrix;
+      */
+    //int nrow = FillMat.n_rows;
     int ncol = FillMat.n_cols;
-    int VecLen = ValueVec.n_elem;
+    
+    //int VecLen = ValueVec.n_elem;
     //if(nrow != ncol) stop("matrix must be symetric");
     //if(diag == true && (nrow**2 - 1/2 * nrow)!= VecLen  ) stop("lengths are different")
     //if(diag == false && (nrow**2)!= VecLen  ) stop("lengths are different")
 
     // vertical fill , fill columm 1 then 2 ,3 ...........
     int VecCount = 0;
-    if(diag == true )
-      {
-        for(int pcol=0; pcol<ncol; pcol++)
+    // if(diag == true )
+    //   {
+        for(uword pcol=0; pcol<ncol; pcol++)
           {
-            for(int prow=pcol; prow<nrow; prow++)
+            for(uword prow=pcol; prow<ncol; prow++)
               {
                 FillMat(prow, pcol) = ValueVec[VecCount];
                 VecCount++;
               }
           }
-      }
+        
+        /*
+         * alternative way to fillmat
+        
+        for(uword pcol=0; pcol<ncol; pcol++)
+        {
+          uword indexer = pcol * 5;
+          for(uword prow=pcol; prow<ncol; prow++)
+          {
+            uword innerIndexer = indexer + prow ;
+            FillMat.at(innerIndexer) = ValueVec[VecCount];
+            VecCount++;
+          }
+        }
+      
+         */
+        
+        // }
 
     return FillMat;
 

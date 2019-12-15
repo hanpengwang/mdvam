@@ -2,6 +2,14 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 ValueAdded <- function(All) {
-    .Call('_mdvam_ValueAdded', PACKAGE = 'mdvam', All)
+    invisible(.Call('_mdvam_ValueAdded', PACKAGE = 'mdvam', All))
+}
+
+test1 <- function() {
+    invisible(.Call('_mdvam_test1', PACKAGE = 'mdvam'))
+}
+
+test2 <- function() {
+    invisible(.Call('_mdvam_test2', PACKAGE = 'mdvam'))
 }
 

@@ -13,7 +13,7 @@
 
 using namespace Rcpp;
 using namespace arma;
-
+using namespace std;
 
 class MultiVar
 
@@ -31,7 +31,8 @@ private:
   List DataX, DataY;
 
 //---------------Processed Data&Params -----------------
-  List ListZ;
+  //List ListZ;
+  std::vector<mat> ListZ;
   mat Z;
   mat X;
   mat Y;
@@ -48,7 +49,8 @@ private:
   mat LambdaTilde;
   mat LambdaUnarranged;
   sp_mat OmegaMat;
-  List OmegaList;
+  //List OmegaList;
+  std::vector<mat> OmegaList;
 
 public:
 
@@ -78,7 +80,10 @@ public:
   sp_mat Pjm(int& m, int& j, int& nj);
   mat bdiag(const mat& dmat, int &size);
   //mat bdiag(const List& ListMat);
-  sp_mat bdiag(const List& ListMat);
+  
+  //sp_mat bdiag(const List& ListMat);
+  sp_mat bdiag(const std::vector<mat>& ListMat);
+  
   //some useful methods
   colvec SetDiff(colvec& x, colvec& y);
   mat FillTri(mat& FillMat, colvec& ValueVec, bool diag);
