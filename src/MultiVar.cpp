@@ -429,9 +429,15 @@ void MultiVar::VA()
 
 mat MultiVar::Withinj(int& nj)
   {
-    int MatSize = nj * M;
-    mat Jnj = (ones<mat>(nj,nj)) / nj;
-    mat wj = eye(MatSize, MatSize) - bdiag(Jnj, M) ;
+    //## int MatSize = nj * M;
+    //## mat Jnj = (ones<mat>(nj,nj)) / nj;
+    //##mat wj = eye(MatSize, MatSize) - bdiag(Jnj, M) ;
+    mat Jnj(nj, nj); 
+    double nj_1 = - 1 / nj;
+    Jnj.fill(nj_1);
+    Jnj.diag() += 1; 
+    mat wj = bdiag(Jnj, M);
+    //##----
     return wj;
   }
 
@@ -440,8 +446,6 @@ mat MultiVar::Hj(int& nj)
   {
     mat OneMat = ones<mat>(1, nj);
     return bdiag(OneMat, M);
-
-
   }
 
 
