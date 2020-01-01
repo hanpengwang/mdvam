@@ -52,7 +52,9 @@ void MultiVar::DataTransform()
     const int LastC_Z = FirstC + (K+1) * M - 1;
     const int LastC_X = FirstC + K * M - 1;
     const int LastC_Y = 0;
-
+    
+    ListZ.reserve(J); //## initialize size of ListZ; 
+    
     for (int i=0; i<J; i++ )
       {
         int nj = Nj[i];
@@ -70,7 +72,7 @@ void MultiVar::DataTransform()
         z = bdiag(z, M);
         //#
         mat withinx = wj * x;
-        ListZ.push_back(z);
+        ListZ[i] = z; //## ListZ.push_back(z);
 
 
 
