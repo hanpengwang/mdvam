@@ -63,8 +63,12 @@ void MultiVar::DataTransform()
         mat x = DataX[i];
         mat onevec(nj, 1, fill::ones);
         mat z = join_horiz(onevec, x);
-        x = kron(MDiag, x);
-        z = kron(MDiag, z);
+        //#
+        //## x = kron(MDiag, x);
+        //## z = kron(MDiag, z);
+        x = bdiag(x, M);
+        z = bdiag(z, M);
+        //#
         mat withinx = wj * x;
         ListZ.push_back(z);
 
@@ -441,7 +445,7 @@ mat MultiVar::Withinj(int& nj)
     return wj;
   }
 
-
+  
 mat MultiVar::Hj(int& nj)
   {
     mat OneMat = ones<mat>(1, nj);
