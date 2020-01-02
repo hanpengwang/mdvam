@@ -38,9 +38,9 @@ void MultiVar::UpdateData()
     Y = zeros<mat>((N * M), 1);
     WithinX = zeros<mat>((N * M), (K*M));
     WithinY = zeros<mat>((N * M), 1);
-    MDiag = eye<mat>(M,M);
-    Gamma = zeros<mat>(M, J);
-    QH = zeros<mat>((N * M), Nj.n_rows * M);
+    MDiag = eye<mat>(M,M); //* later check for opt
+    Gamma = zeros<mat>(M, J); //* later check for opt
+    QH = zeros<mat>((N * M), Nj.n_rows * M);  //* later check for opt
 
   }
 
@@ -72,7 +72,7 @@ void MultiVar::DataTransform()
         z = bdiag(z, M);
         //#
         mat withinx = wj * x;
-        ListZ[i] = z; //## ListZ.push_back(z);
+        ListZ.push_back(z);
 
 
 
@@ -133,7 +133,7 @@ void MultiVar::GetQH()
           {
             int nj2 = Nj[i2];
             mat Z2 = ListZ[i2];
-            mat blocki = 0 - Z1 * (R * Z2.t());
+            mat blocki = 0 - Z1 * (R * Z2.t()); 
             if(i2 == i1) blocki = eye<mat>(M * nj1, M*nj1) + blocki;
             mat QHj1j2 = blocki * Hj(nj2).t();
             FirstC = i2 * M;
@@ -205,7 +205,7 @@ void MultiVar::Lambda()
               {
                 sp_mat Pq = Pjm(q, j, nj);
                 sp_mat Pqj = Pjmj(q, nj);
-                mat QjTilde = eye<mat>(M*nj, M*nj) - Zj * (R * Zj.t());
+                mat QjTilde = eye<mat>(M*nj, M*nj) - Zj * (R * Zj.t());  //* later check for opt
                 double vjpq = as_scalar(ejp.t() * Pqj * ej);
                 double bjpq = SigmaSquare * sum((Pqj * (QjTilde * Ppj.t())).diag());
                 mat Apq = (Pp * QH).t() * (Pq * QH);
