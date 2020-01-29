@@ -18,7 +18,7 @@ using namespace std;
 
 
 
-void ValueAdded(List All)
+arma::mat ValueAdded(List All)
   {
 
     List DataY = All[0];
@@ -38,35 +38,45 @@ void ValueAdded(List All)
                   K, J, DF);
     Model.UpdateData();
 
-
+    clock_t begin = clock();
 
     Model.DataTransform();
-    cout << "done " << "data update" << endl;
-    Model.SigmaEst();
-    cout << "done " << "sig" << endl;
-    //-----------------------------
-
-    Model.GetQH();
-    cout << "done " << "qh" << endl;
-    Model.Lambda();
-    cout << "done " << "lmd" << endl;
-    
-    clock_t begin = clock();
-    
-    Model.Omega();
     
     clock_t end = clock();
     double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
     
-    cout << elapsed_secs<<endl;
+    //cout << elapsed_secs<<endl;
     
-    cout << "done " << "omg" << endl;
-    // Model.VA();
-    // cout << "done " << "va" << endl;
-    // mat Gamma = Model.Gamma;
-    // Gamma = Gamma.t();
-    // return Gamma;
+    
+    
+    //cout << "done " << "data update" << endl;
+    Model.SigmaEst();
+    //cout << "done " << "sig" << endl;
+    //-----------------------------
 
+    Model.GetQH();
+    //cout << "done " << "qh" << endl;
+    Model.Lambda();
+    //cout << "done " << "lmd" << endl;
+    
+    // clock_t begin = clock();
+    
+    Model.Omega();
+    
+    // clock_t end = clock();
+    // double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
+
+    // cout << elapsed_secs<<endl;
+
+    
+    //cout << "done " << "omg" << endl;
+    Model.VA();
+    //cout << "done " << "va" << endl;
+    mat Gamma = Model.Gamma;
+    Gamma = Gamma.t();
+    
+    return Gamma;
+    
   }
 
 
@@ -76,122 +86,45 @@ void ValueAdded(List All)
 
 
 
-// [[Rcpp::export]]
 
-void test1(){
-  
 
-  
-  
-  // std::vector<mat> l(25);
-  // 
-  // mat M(1000,1000, fill::randu);
-  // 
-  // 
-  // int range = pow(10,2) ;
-  // 
-  // for(int i=0;i<range; i++){
-  // 
-  //   // cout<<i<<endl;
-  // 
-  //   l.push_back(M);
-  // 
-  // }
-  // 
-  // for(int i=0;i<range; i++){
-  // 
-  //   // cout<<i<<endl;
-  // 
-  //   mat  m = l[i];
-  // 
-  // }
-
-// 
-//   for(mat n:l){
-// 
-//     // cout<<i<<endl;
-// 
-//     m = n;
-// 
+// void test3(){
+//   mat A(1000, 50, fill::randu);
+//   mat C;
+//   
+//   clock_t begin = clock();
+//   
+//   for(int i = 0; i < 1000; i++){
+//     C = A * A.t();
 //   }
-  // int d = pow(10,3);
-  // sp_mat m = speye<sp_mat>(d,d);
-  // 
-  // mat m2 = conv_to<mat>::from(m);
-  // mat i = inv(m2);
-  // 
-
-
-  mat X = randu<mat>(2000,2000);
-  
-  clock_t begin = clock();
-  
-  
-  mat inv_x = inv(X);
-  
-
-  clock_t end = clock();
-  double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
-
-  cout << elapsed_secs<<endl;
-  //-----------------------------------------
-    
-  // clock_t begin2 = clock();
-  // 
-  // 
-  // for(int i=0;i<range; i++){
-  // 
-  //   // cout<<i<<endl;
-  //   mat EyeMat = eye<mat>(5*100,5*100);
-  // 
-  // }
-  // 
-  // clock_t end2 = clock();
-  // double elapsed_secs2 = double(end2 - begin2) / CLOCKS_PER_SEC;
-  // 
-  // cout << elapsed_secs2<<endl;
-  
-}
-
-
-// [[Rcpp::export]]
-
-void test2(){
-
-  List l;
-
-  mat M(1000,1000, fill::randu);
-
-
-  int range = pow(10,2) ;
-
-  for(int i=0;i<range; i++){
-
-   // cout<<i<<endl;
-
-    l.push_back(M);
-
-  }
-  // 
-  // 
-  for(int i=0;i<range; i++){
-
-    // cout<<i<<endl;
-
-   mat  m = l[i];
-
-  }
-  
-  // int d = pow(10,3);
-  // mat m(d,d, fill::eye);
-  // mat i = inv(m);
-  // 
-
-}
-
-
-
-
+//   
+//   clock_t end = clock();
+//   double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
+//   
+//   cout << elapsed_secs<<endl;
+//   
+//   
+//   
+//   clock_t begin2 = clock();
+// 
+//   std::vector<mat> ListC;
+//   ListC.reserve(20);
+// 
+//   for(int i = 0; i < 100; i++){
+//       ListC.push_back(A * A.t());
+//   }
+// 
+//   for(int i = 0; i < 1000; i++){
+//       C = ListC[(21+i)%20];
+//   }
+//   
+//   clock_t end2 = clock();
+//   double elapsed_secs2 = double(end2 - begin2) / CLOCKS_PER_SEC;
+//   
+//   cout << elapsed_secs2<<endl;
+// 
+// 
+// }
 
 
 

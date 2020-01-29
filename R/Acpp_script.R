@@ -10,9 +10,9 @@
 #' @return function returns multivariate value added outcome for each specific category
 #'
 #' @examples
-#' ValueAdded(cppmdvam(x, y, j))
-#' ValueAdded(cppmdvam(x, y, j, c('X1','X2',..,'Xm')))
-#' ValueAdded(cppmdvam(x, y, j, c('1,2,..,n)))
+#' cppmdvam(x, y, j)
+#' cppmdvam(x, y, j, c('X1','X2',..,'Xm'))
+#' cppmdvam(x, y, j, c('1,2,..,n))
 #'
 #' @export
 
@@ -64,8 +64,9 @@ cppmdvam <-
     All <- list(Ylist, Xlist, M, N, Nj,
                 K, J, DF)
 
-
-    return(ValueAdded(All))
+    va = ValueAdded(All)
+    
+    return(va)
 
 
   }

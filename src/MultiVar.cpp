@@ -40,7 +40,7 @@ void MultiVar::UpdateData()
     WithinY = zeros<mat>((N * M), 1);
     MDiag = eye<mat>(M,M); //* later check for opt
     Gamma = zeros<mat>(M, J); //* later check for opt
-    QH = zeros<mat>((N * M), Nj.n_rows * M);  //* later check for opt
+    QH = zeros<sp_mat>((N * M), Nj.n_rows * M);  //* later check for opt
 
   }
 
@@ -54,7 +54,6 @@ void MultiVar::DataTransform()
     const int LastC_Y = 0;
     
     ListZ.reserve(J); //## initialize size of ListZ; 
-    
     for (int i=0; i<J; i++ )
       {
         int nj = Nj[i];
@@ -93,10 +92,9 @@ void MultiVar::DataTransform()
 
         FirstR = LastR + 1;
 
-
     }
 
-
+  
 
   }
 
@@ -118,6 +116,7 @@ void MultiVar::SigmaEst()
 
 void MultiVar::GetQH()
   {
+  
     int FirstR = 0;
     int FirstC;
     int LastR;
@@ -133,7 +132,7 @@ void MultiVar::GetQH()
           {
             int nj2 = Nj[i2];
             mat Z2 = ListZ[i2];
-            mat blocki = 0 - Z1 * (R * Z2.t()); 
+            mat blocki = 0 - Z1 * (R * Z2.t());    //* check for opt move up to first loop
             if(i2 == i1) blocki = eye<mat>(M * nj1, M*nj1) + blocki;
             mat QHj1j2 = blocki * Hj(nj2).t();
             FirstC = i2 * M;
@@ -144,6 +143,7 @@ void MultiVar::GetQH()
         FirstR = LastR + 1;
     }
 
+ 
 }
 
 void MultiVar::Lambda()

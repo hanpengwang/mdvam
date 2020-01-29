@@ -14,6 +14,8 @@ data_process <- function(x, y, col_category) {
                     df_list[[i]] <- df_rename
                     col_names[[i]] <- colnames(df_rename)
                 }
+                
+               
                 df <- cbind(df_list[[1]], df_list[[2]], df_list[[3]])
                 df <- df[order(df[,1]),]
                 df <- as.matrix(na.omit(df))
